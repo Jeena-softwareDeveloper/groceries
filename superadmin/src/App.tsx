@@ -1,0 +1,76 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Layout from './components/Layout';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import DistrictsPage from './pages/DistrictsPage';
+import AreasPage from './pages/AreasPage';
+import CategoriesPage from './pages/CategoriesPage';
+import VendorsPage from './pages/VendorsPage';
+import SettingsPage from './pages/SettingsPage';
+import VendorLoginPage from './pages/VendorLoginPage';
+import VendorLayout, { VendorDashboard, VendorProducts, VendorOrders, VendorInventory } from './pages/VendorPanel';
+import AnalyticsPage, { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return <p className="loading">Loading…</p>;
+  if (!user || user.role !== 'SUPER_ADMIN') return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
+function VendorRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return <p className="loading">Loading…</p>;
+  if (!user || user.role !== 'VENDOR') return <Navigate to="/vendor/login" replace />;
+  return <>{children}</>;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/vendor/login" element={<VendorLoginPage />} />
+          <Route
+            path="/vendor"
+            element={
+              <VendorRoute>
+                <VendorLayout />
+              </VendorRoute>
+            }
+          >
+            <Route index element={<VendorDashboard />} />
+            <Route path="products" element={<VendorProducts />} />
+            <Route path="inventory" element={<VendorInventory />} />
+            <Route path="orders" element={<VendorOrders />} />
+          </Route>
+          <Route
+            path="/"
+            element={
+              <AdminRoute>
+                <Layout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="districts" element={<DistrictsPage />} />
+            <Route path="areas" element={<AreasPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="vendors" element={<VendorsPage />} />
+            <Route path="banners" element={<BannersPage />} />
+            <Route path="micro-banners" element={<MicroBannersPage />} />
+            <Route path="delivery-charges" element={<DeliveryChargesPage />} />
+            <Route path="offers" element={<OffersPage />} />
+            <Route path="coupons" element={<CouponsPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="customers" element={<CustomersPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
