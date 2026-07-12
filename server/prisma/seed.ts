@@ -64,11 +64,11 @@ async function main() {
   });
 
   const products = [
-    { name: 'Amul Taaza Milk 1L', slug: 'amul-taaza-1l', mrp: 62, sellingPrice: 58, unit: '1L', categoryId: dairy.id, tags: ['BEST_SELLER'] as const },
-    { name: 'Britannia Bread', slug: 'britannia-bread', mrp: 45, sellingPrice: 42, unit: '400g', categoryId: groceries.id, tags: ['FEATURED'] as const },
-    { name: 'Lays Classic Salted', slug: 'lays-classic', mrp: 20, sellingPrice: 18, unit: '52g', categoryId: snacks.id, tags: ['NEW_ARRIVAL'] as const },
-    { name: 'Fresh Tomatoes', slug: 'fresh-tomatoes', mrp: 40, sellingPrice: 35, unit: '500g', categoryId: groceries.id, tags: [] as const },
-    { name: 'Curd 500g', slug: 'curd-500g', mrp: 35, sellingPrice: 32, unit: '500g', categoryId: dairy.id, tags: ['INSTANT_DELIVERY'] as const },
+    { name: 'Amul Taaza Milk 1L', slug: 'amul-taaza-1l', mrp: 62, sellingPrice: 58, unit: '1L', categoryId: dairy.id, tags: 'BEST_SELLER' },
+    { name: 'Britannia Bread', slug: 'britannia-bread', mrp: 45, sellingPrice: 42, unit: '400g', categoryId: groceries.id, tags: 'FEATURED' },
+    { name: 'Lays Classic Salted', slug: 'lays-classic', mrp: 20, sellingPrice: 18, unit: '52g', categoryId: snacks.id, tags: 'NEW_ARRIVAL' },
+    { name: 'Fresh Tomatoes', slug: 'fresh-tomatoes', mrp: 40, sellingPrice: 35, unit: '500g', categoryId: groceries.id, tags: null },
+    { name: 'Curd 500g', slug: 'curd-500g', mrp: 35, sellingPrice: 32, unit: '500g', categoryId: dairy.id, tags: 'INSTANT_DELIVERY' },
   ];
 
   for (const p of products) {
@@ -83,7 +83,7 @@ async function main() {
         mrp: p.mrp,
         sellingPrice: p.sellingPrice,
         unit: p.unit,
-        tags: [...p.tags],
+        tags: p.tags,
         status: 'PUBLISHED',
         inventory: { create: { stock: 100, reorderLevel: 10 } },
       },
@@ -128,6 +128,61 @@ async function main() {
 
   await prisma.appSetting.upsert({ where: { key: 'minOrderValue' }, update: {}, create: { key: 'minOrderValue', value: 99 } });
   await prisma.appSetting.upsert({ where: { key: 'taxPercent' }, update: {}, create: { key: 'taxPercent', value: 5 } });
+
+  const homePageLayout = {
+    heroBanner: {
+      trustBadge: 'Freshness You Can Trust',
+      title: 'Groceries\nDelivered Fast',
+      subtitle: 'Your daily essentials,\ndelivered to your door.',
+      buttonText: 'Shop Now',
+      imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
+    },
+    freeDelivery: {
+      title: 'FREE DELIVERY',
+      subtitle: 'On all orders above ₹199',
+    },
+    bulkOrders: {
+      title: 'Bulk Orders?',
+      subtitle: 'Get exclusive discounts on bulk orders',
+      buttonText: 'Order Now',
+    },
+    features: [
+      { icon: 'leaf-outline', text: '100% Fresh\nProducts' },
+      { icon: 'time-outline', text: 'On-time\nDelivery' },
+      { icon: 'pricetag-outline', text: 'Best Prices\nEveryday' }
+    ],
+    whyShopWithUs: [
+      { icon: 'grid-outline', title: 'Wide Range', subtitle: 'Everything you need in one place' },
+      { icon: 'rocket-outline', title: 'Fast Delivery', subtitle: 'Quick & reliable delivery at your doorstep' },
+      { icon: 'checkmark-circle-outline', title: 'Best Quality', subtitle: 'Handpicked & quality checked products' },
+      { icon: 'refresh-outline', title: 'Easy Returns', subtitle: 'Hassle-free returns & refunds' }
+    ],
+    referEarn: {
+      title: 'Refer & Earn',
+      subtitle: 'Invite your friends and earn exciting rewards',
+      buttonText: 'Refer Now',
+    },
+    popularSearches: ['Milk', 'Eggs', 'Rice', 'Oil', 'Onion', 'Potato'],
+    footer: {
+      title: 'Everything You Need,\nDelivered With Care',
+      subtitle: 'From fresh produce to daily essentials,\nwe\'ve got you covered.',
+      stats: [
+        { icon: 'happy-outline', number: '10K+', label: 'Happy Customers' },
+        { icon: 'basket-outline', number: '500+', label: 'Daily Orders' },
+        { icon: 'storefront-outline', number: '50+', label: 'Partner Stores' }
+      ],
+      download: {
+        title: 'Download the DistrictMart App',
+        subtitle: 'Get the best shopping experience on our app',
+      }
+    }
+  };
+
+  await prisma.appSetting.upsert({
+    where: { key: 'HOME_PAGE_LAYOUT' },
+    update: { value: homePageLayout },
+    create: { key: 'HOME_PAGE_LAYOUT', value: homePageLayout }
+  });
 
   // Sample customer with address for checkout testing
   const customer = await prisma.customer.upsert({

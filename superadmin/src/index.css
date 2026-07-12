@@ -2,9 +2,10 @@
   box-sizing: border-box;
 }
 
+@import "tailwindcss";
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
   background: #f8fafc;
   color: #0f172a;
 }
@@ -87,79 +88,6 @@ body {
   opacity: 0.6;
 }
 
-/* Layout */
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 240px;
-  background: #0f172a;
-  color: #fff;
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar h2 {
-  margin: 0 0 4px;
-  font-size: 1.25rem;
-}
-
-.sidebar-role {
-  color: #94a3b8;
-  font-size: 0.75rem;
-  margin: 0 0 24px;
-}
-
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.sidebar nav a {
-  color: #cbd5e1;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-}
-
-.sidebar nav a:hover {
-  background: #1e293b;
-  color: #fff;
-}
-
-.sidebar-footer {
-  border-top: 1px solid #334155;
-  padding-top: 16px;
-}
-
-.sidebar-footer p {
-  font-size: 0.875rem;
-  margin: 0 0 8px;
-}
-
-.sidebar-footer button {
-  width: 100%;
-  background: #334155;
-}
-
-.main-content {
-  flex: 1;
-  padding: 32px;
-}
-
-.main-content h1 {
-  margin: 0 0 8px;
-}
-
-.page-desc {
-  color: #64748b;
-  margin: 0 0 24px;
-}
 
 /* Tables */
 .data-table {
@@ -310,4 +238,15 @@ body {
 .loading {
   padding: 48px;
   text-align: center;
+}
+
+/* Hide scrollbar for elements with .no-scrollbar or .styled-scrollbar */
+.no-scrollbar::-webkit-scrollbar,
+.styled-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.styled-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

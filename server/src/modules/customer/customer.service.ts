@@ -75,7 +75,7 @@ export async function getHomeFeed(districtIdInput: string, areaId?: string) {
   if (cached) return cached;
 
   const now = new Date();
-  const [banners, microBanners, categories, vendors, trendingProducts, offers] = await Promise.all([
+  const [banners, microBanners, categories, vendors, trendingProducts, offers, layoutSetting] = await Promise.all([
     prisma.banner.findMany({ where: { OR: [{ districtId }, { districtId: null }], isActive: true }, orderBy: { sortOrder: 'asc' }, take: 5 }),
     prisma.microBanner.findMany({ where: { OR: [{ districtId }, { districtId: null }], isActive: true }, take: 3 }),
     prisma.category.findMany({ where: { parentId: null, isActive: true }, orderBy: { sortOrder: 'asc' }, take: 12 }),
@@ -91,6 +91,7 @@ export async function getHomeFeed(districtIdInput: string, areaId?: string) {
       take: 12,
     }),
     prisma.offer.findMany({ where: { isActive: true, OR: [{ districtId }, { districtId: null }] }, take: 5 }),
+    prisma.appSetting.findUnique({ where: { key: 'HOME_PAGE_LAYOUT' } })
   ]);
 
   const feed = {
@@ -99,6 +100,7 @@ export async function getHomeFeed(districtIdInput: string, areaId?: string) {
     bestSellers: trendingProducts.slice(0, 6),
     recentlyAdded: trendingProducts,
     flashSale: offers.filter((o) => o.endsAt && o.endsAt > now),
+    layout: layoutSetting?.value || null,
   };
   await cacheSet(cacheKey, feed, 120);
   return feed;

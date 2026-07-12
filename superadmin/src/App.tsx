@@ -10,7 +10,8 @@ import VendorsPage from './pages/VendorsPage';
 import SettingsPage from './pages/SettingsPage';
 import VendorLoginPage from './pages/VendorLoginPage';
 import VendorLayout, { VendorDashboard, VendorProducts, VendorOrders, VendorInventory } from './pages/VendorPanel';
-import AnalyticsPage, { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
+import AnalyticsPage from './pages/AnalyticsPage';
+import { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

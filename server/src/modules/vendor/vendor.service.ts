@@ -1,7 +1,7 @@
 import { prisma } from '../../lib/prisma.js';
 import { cacheDel, cacheDelPattern } from '../../lib/redis.js';
 import { ForbiddenError, NotFoundError, ValidationError } from '../../utils/errors.js';
-import type { ProductStatus } from '@prisma/client';
+
 
 export async function getVendorProfile(vendorId: string) {
   const vendor = await prisma.vendor.findUnique({
@@ -69,7 +69,7 @@ export async function updateProduct(vendorId: string, productId: string, data: R
   return updated;
 }
 
-export async function publishProduct(vendorId: string, productId: string, status: ProductStatus) {
+export async function publishProduct(vendorId: string, productId: string, status: string) {
   const product = await prisma.product.findFirst({ where: { id: productId, vendorId } });
   if (!product) throw new NotFoundError('Product not found');
   const updated = await prisma.product.update({ where: { id: productId }, data: { status } });
