@@ -77,3 +77,23 @@ export async function me(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
+
+export async function switchToVendor(req: Request, res: Response, next: NextFunction) {
+  try {
+    const tokens = await authService.switchToVendor(req.user!.sub);
+    sendSuccess(res, tokens);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function switchToCustomer(req: Request, res: Response, next: NextFunction) {
+  try {
+    // For VENDOR role, req.user!.vendorId is not in JwtPayload yet, but req.user!.sub is the vendor ID
+    const tokens = await authService.switchToCustomer(req.user!.sub);
+    sendSuccess(res, tokens);
+  } catch (err) {
+    next(err);
+  }
+}
+

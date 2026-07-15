@@ -98,6 +98,23 @@ export async function loginVendor(email: string, password: string) {
   return issueTokens({ sub: vendor.id, role: 'VENDOR', vendorId: vendor.id });
 }
 
+export async function switchToVendor(customerId: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { customerId } });
+  if (!vendor) throw new UnauthorizedError('No vendor account linked to this customer');
+  if (vendor.status === 'PENDING') throw new ForbiddenError('Vendor account pending approval');
+  if (vendor.status === 'REJECTED') throw new ForbiddenError('Vendor application was rejected');
+  if (vendor.status === 'SUSPENDED') throw new ForbiddenError('Vendor account is suspended');
+  
+  return issueTokens({ sub: vendor.id, role: 'VENDOR', vendorId: vendor.id });
+}
+
+export async function switchToCustomer(vendorId: string) {
+  const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
+  if (!vendor || !vendor.customerId) throw new UnauthorizedError('No customer account linked');
+  
+  return issueTokens({ sub: vendor.customerId, role: 'CUSTOMER' });
+}
+
 export async function loginAdmin(email: string, password: string) {
   const admin = await prisma.superAdmin.findUnique({ where: { email } });
   if (!admin || !admin.isActive || !(await comparePassword(password, admin.passwordHash))) {

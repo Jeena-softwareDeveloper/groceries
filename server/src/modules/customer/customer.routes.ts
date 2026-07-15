@@ -3,6 +3,8 @@ import { authenticate, authorize } from '../auth/auth.service.js';
 import { sendSuccess } from '../../utils/response.js';
 import { paramId } from '../../utils/params.js';
 import * as svc from './customer.service.js';
+import { vendorRequestCustomerRoutes } from '../vendor-request/vendor-request.customer.routes.js';
+
 
 export const customerRoutes = Router();
 
@@ -152,3 +154,7 @@ customerRoutes.delete('/search/recent', ...auth, async (req, res, next) => {
 customerRoutes.post('/payment/webhook', async (req, res, next) => {
   try { sendSuccess(res, await svc.handlePaymentWebhook(req.body)); } catch (e) { next(e); }
 });
+
+// Vendor onboarding request
+customerRoutes.use('/vendor-request', vendorRequestCustomerRoutes);
+

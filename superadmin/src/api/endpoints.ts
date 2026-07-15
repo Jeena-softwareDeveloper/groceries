@@ -29,6 +29,14 @@ export const ENDPOINTS = {
       BROADCAST: '/admin/notifications/broadcast',
     },
     SETTINGS: '/admin/settings',
+    VENDOR_REQUESTS: {
+      BASE: '/admin/vendor-requests',
+      PENDING_COUNT: '/admin/vendor-requests/pending-count',
+      BY_ID: (id: string) => `/admin/vendor-requests/${id}`,
+      APPROVE: (id: string) => `/admin/vendor-requests/${id}/approve`,
+      REJECT: (id: string) => `/admin/vendor-requests/${id}/reject`,
+      REQUEST_INFO: (id: string) => `/admin/vendor-requests/${id}/request-info`,
+    },
   },
   VENDOR: {
     DASHBOARD: '/vendor/dashboard',

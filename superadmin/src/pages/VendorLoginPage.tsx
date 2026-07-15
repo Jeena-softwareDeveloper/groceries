@@ -27,7 +27,7 @@ export default function VendorLoginPage() {
           ?.data?.error?.message ??
         (err as { message?: string })?.message ??
         'Invalid credentials or vendor not approved';
-      setError(msg.includes('Network') || msg.includes('404') ? 'Cannot reach API — use http://127.0.0.1:4000' : msg);
+      setError(msg.includes('Network') || msg.includes('404') ? 'Cannot reach API — use http://127.0.0.1:3000' : msg);
     } finally {
       setLoading(false);
     }

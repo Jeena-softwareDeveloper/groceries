@@ -47,6 +47,7 @@ model District {
   microBanners     MicroBanner[]
   deliveryCharges  DeliveryChargeRule[]
   offers           Offer[]
+  vendorRequests   VendorRequest[]
 }
 
 model Area {
@@ -58,8 +59,9 @@ model Area {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  district District @relation(fields: [districtId], references: [id], onDelete: Cascade)
-  vendors  Vendor[]
+  district       District        @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  vendors        Vendor[]
+  vendorRequests VendorRequest[]
 
   @@index([districtId])
 }
@@ -115,6 +117,7 @@ model Vendor {
   area         Area          @relation(fields: [areaId], references: [id])
   district     District      @relation(fields: [districtId], references: [id])
   districtId   String
+  customerId   String?       @unique
   staff        VendorStaff[]
   products     Product[]
   orders       Order[]
@@ -195,10 +198,30 @@ model Product {
   orderItems  OrderItem[]
   wishlists   Wishlist[]
   reviews     Review[]
+  approvals   ProductApproval[]
 
   @@unique([vendorId, slug])
   @@index([vendorId])
   @@index([categoryId])
+  @@index([status])
+}
+
+model ProductApproval {
+  id               String   @id @default(cuid())
+  productId        String
+  vendorId         String
+  status           String   @default("PENDING")
+  adminNotes       String?
+  rejectionReason  String?
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([vendorId])
   @@index([status])
 }
 
@@ -239,16 +262,17 @@ model Customer {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  addresses     Address[]
-  cartItems     CartItem[]
-  wishlists     Wishlist[]
-  orders        Order[]
-  reviews       Review[]
-  notifications Notification[]
-  wallet        Wallet?
-  coupons       CustomerCoupon[]
-  searchLogs    SearchLog[]
+  addresses      Address[]
+  cartItems      CartItem[]
+  wishlists      Wishlist[]
+  orders         Order[]
+  reviews        Review[]
+  notifications  Notification[]
+  wallet         Wallet?
+  coupons        CustomerCoupon[]
+  searchLogs     SearchLog[]
   supportTickets SupportTicket[]
+  vendorRequests VendorRequest[]
 }
 
 model Address {
@@ -412,22 +436,23 @@ model MicroBanner {
 }
 
 model Offer {
-  id          String     @id @default(cuid())
-  title       String
-  description String?
-  imageUrl    String?
-  scope String
-  districtId  String?
-  vendorId    String?
-  categoryId  String?
-  discountPct Decimal?   
-  discountAmt Decimal?   
-  minOrder    Decimal?   
-  isActive    Boolean    @default(true)
-  startsAt    DateTime?
-  endsAt      DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  imageUrl       String?
+  scope          String
+  districtId     String?
+  vendorId       String?
+  categoryId     String?
+  discountPct    Decimal?   
+  discountAmt    Decimal?   
+  minOrder       Decimal?   
+  isActive       Boolean    @default(true)
+  approvalStatus String     @default("PENDING")
+  startsAt       DateTime?
+  endsAt         DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
   district District? @relation(fields: [districtId], references: [id])
   vendor   Vendor?   @relation(fields: [vendorId], references: [id])
@@ -604,6 +629,67 @@ model SearchLog {
   customer Customer? @relation(fields: [customerId], references: [id])
 
   @@index([query])
+}
+
+// ─── Vendor Onboarding Request ────────────────────────────────────────────────
+
+model VendorRequest {
+  id                String    @id @default(cuid())
+  customerId        String
+  status            String    @default("DRAFT")
+
+  // Step 1 – Basic
+  shopName          String?
+  ownerName         String?
+  mobileNumber      String?
+  email             String?
+
+  // Step 2 – Business
+  shopCategory      String?
+  description       String?
+  gstNumber         String?
+  fssaiNumber       String?
+  businessRegNumber String?
+
+  // Step 3 – Location
+  districtId        String?
+  areaId            String?
+  address           String?
+  latitude          Float?
+  longitude         Float?
+  deliveryRadius    Float?    @default(5)
+
+  // Step 4 – Banking
+  accountHolderName String?
+  bankName          String?
+  accountNumber     String?
+  ifscCode          String?
+  upiId             String?
+
+  // Step 5 – Documents
+  logoUrl           String?
+  bannerUrl         String?
+  ownerPhotoUrl     String?
+  govtIdUrl         String?
+  gstCertUrl        String?
+  fssaiCertUrl      String?
+
+  // Admin review fields
+  adminRemarks      String?
+  rejectionReason   String?
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  submittedAt       DateTime?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  district   District? @relation(fields: [districtId], references: [id])
+  area       Area?     @relation(fields: [areaId], references: [id])
+
+  @@index([customerId])
+  @@index([status])
 }
 
 model OtpSession {

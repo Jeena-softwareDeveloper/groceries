@@ -12,6 +12,9 @@ import VendorLoginPage from './pages/VendorLoginPage';
 import VendorLayout, { VendorDashboard, VendorProducts, VendorOrders, VendorInventory } from './pages/VendorPanel';
 import AnalyticsPage from './pages/AnalyticsPage';
 import { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
+import VendorRequestsPage from './pages/VendorRequestsPage';
+import ProductApprovalsPage from './pages/ProductApprovalsPage';
+
 
 import { AdminRoute, VendorRoute } from './guards';
 
@@ -48,7 +51,10 @@ export default function App() {
             <Route path="areas" element={<AreasPage />} />
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="vendors" element={<VendorsPage />} />
+            <Route path="vendor-requests" element={<VendorRequestsPage />} />
+            <Route path="product-approvals" element={<ProductApprovalsPage />} />
             <Route path="banners" element={<BannersPage />} />
+
             <Route path="micro-banners" element={<MicroBannersPage />} />
             <Route path="delivery-charges" element={<DeliveryChargesPage />} />
             <Route path="offers" element={<OffersPage />} />
