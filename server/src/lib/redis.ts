@@ -16,9 +16,9 @@ export async function connectRedis(): Promise<boolean> {
       retryStrategy: () => null,
       enableOfflineQueue: false,
     });
+    client.on('error', (err: Error) => logger.debug({ err }, 'Redis error'));
     await client.connect();
     await client.ping();
-    client.on('error', (err: Error) => logger.debug({ err }, 'Redis error'));
     redis = client;
     return true;
   } catch {

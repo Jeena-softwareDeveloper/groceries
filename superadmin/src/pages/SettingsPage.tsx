@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { api, type ApiResponse } from '../api/client';
 import { 
   Copy, Wallet, Banknote, Star, Store, Tag, Image as ImageIcon, Truck, Gift,
   UserPlus, ShoppingCart, Package, AlertTriangle, CreditCard, User, FileText, Bell, Mail,
   UploadCloud, Lock, CheckCircle
 } from 'lucide-react';
+import { settingsApi } from '../api';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('General');
@@ -95,15 +95,15 @@ export default function SettingsPage() {
   };
 
   useEffect(() => {
-    api.get<ApiResponse<Record<string, unknown>>>('/admin/settings').then((res) => {
-      if (res.data.data.minOrderValue) handleChange('minOrderValue', String(res.data.data.minOrderValue));
-      if (res.data.data.taxPercent) handleChange('taxPercent', String(res.data.data.taxPercent));
+    settingsApi.get().then((res) => {
+      if (res.data.minOrderValue) handleChange('minOrderValue', String(res.data.minOrderValue));
+      if (res.data.taxPercent) handleChange('taxPercent', String(res.data.taxPercent));
     }).catch(() => {});
   }, []);
 
   const handleSave = async () => {
     try {
-      await api.put('/admin/settings', {
+      await settingsApi.update({
         minOrderValue: Number(formData.minOrderValue),
         taxPercent: Number(formData.taxPercent),
       });

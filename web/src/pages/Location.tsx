@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listAreas, listDistricts, setLocation } from '../api/client';
+import { customerApi, setLocation } from '../api';
 
 export default function LocationPage() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function LocationPage() {
   const [areaId, setAreaId] = useState('');
 
   useEffect(() => {
-    listDistricts().then((d) => {
+    customerApi.listDistricts().then((d) => {
       setDistricts(d);
       if (d[0]) setDistrictId(d[0].id);
     });
@@ -18,7 +18,7 @@ export default function LocationPage() {
 
   useEffect(() => {
     if (!districtId) return;
-    listAreas(districtId).then(setAreas);
+    customerApi.listAreas(districtId).then(setAreas);
   }, [districtId]);
 
   const handleSave = () => {

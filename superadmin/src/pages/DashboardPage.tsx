@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { api, type ApiResponse } from '../api/client';
+import { healthApi } from '../api';
 import type { HealthStatus } from '@shared/types';
 import {
-  Calendar, Store, Users, ShoppingBag, IndianRupee, ArrowUp, CheckCircle2, AlertCircle, Star, Apple, Milk, PackageSearch, CupSoda, Cookie
+  Calendar, Store, Users, ShoppingBag, IndianRupee, ArrowUp, CheckCircle2, AlertCircle, Star, Apple, Milk, PackageSearch, CupSoda, Cookie, TrendingUp, ArrowRight
 } from 'lucide-react';
 import './DashboardPage.css';
 
@@ -10,358 +10,242 @@ export default function DashboardPage() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:4000'}/api/v1/health`)
-      .then((r) => r.json())
-      .then((body: ApiResponse<HealthStatus>) => setHealth(body.data))
+    healthApi.check()
+      .then((res) => setHealth(res.data))
       .catch(() => setHealth(null));
   }, []);
 
   return (
-    <div className="flex flex-col gap-6 text-slate-900">
+    <div className="flex flex-col gap-8 w-full max-w-[1600px] mx-auto pb-12 text-slate-900">
       {/* Header */}
-      <div className="flex justify-between items-end mb-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h2 className="text-2xl font-bold m-0 mb-2">Welcome back, Super Admin! 👋</h2>
-          <p className="text-sm text-slate-500 m-0">Here's what's happening with your marketplace today.</p>
+          <h2 className="text-3xl font-extrabold tracking-tight m-0 mb-1.5">Welcome back, Super Admin! 👋</h2>
+          <p className="text-sm font-medium text-slate-500 m-0">Here's what's happening with your marketplace today.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white border border-slate-200 px-3 py-2 rounded-lg text-sm text-slate-600 cursor-pointer shadow-sm hover:bg-slate-50 transition-colors">
-          <Calendar size={16} />
+        <button className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all focus:outline-none focus:ring-2 focus:ring-slate-200">
+          <Calendar size={16} className="text-slate-500" />
           <span>12 Jul 2025 - 12 Aug 2025</span>
-        </div>
+        </button>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <span className="text-sm text-slate-500 font-medium block mb-2">Total Vendors</span>
-              <h3 className="text-3xl font-extrabold m-0">1,248</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {[
+          { label: 'Total Vendors', value: '1,248', delta: '12.5%', icon: Store, bg: 'bg-emerald-100', color: 'text-emerald-600' },
+          { label: 'Total Customers', value: '24,568', delta: '18.3%', icon: Users, bg: 'bg-blue-100', color: 'text-blue-600' },
+          { label: 'Total Orders', value: '8,942', delta: '22.7%', icon: ShoppingBag, bg: 'bg-orange-100', color: 'text-orange-600' },
+          { label: 'Total Revenue', value: '₹24,85,320', delta: '28.4%', icon: IndianRupee, bg: 'bg-emerald-100', color: 'text-emerald-600' },
+        ].map((kpi, i) => (
+          <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
+            <div className="flex justify-between items-start mb-5">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">{kpi.label}</span>
+                <h3 className="text-3xl font-black tracking-tight m-0">{kpi.value}</h3>
+              </div>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
+                <kpi.icon size={20} strokeWidth={2.5} />
+              </div>
             </div>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-green-100 text-green-600 shrink-0">
-              <Store size={24} />
-            </div>
-          </div>
-          <div className="text-xs text-slate-500 flex items-center gap-1">
-            <span className="text-green-600 font-bold flex items-center"><ArrowUp size={14} /> 12.5%</span> vs last 30 days
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <span className="text-sm text-slate-500 font-medium block mb-2">Total Customers</span>
-              <h3 className="text-3xl font-extrabold m-0">24,568</h3>
-            </div>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-100 text-blue-600 shrink-0">
-              <Users size={24} />
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+              <span className="flex items-center text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 font-bold">
+                <TrendingUp size={11} className="mr-1" strokeWidth={3} /> {kpi.delta}
+              </span>
+              <span className="opacity-70 group-hover:opacity-100 transition-opacity">vs last 30 days</span>
             </div>
           </div>
-          <div className="text-xs text-slate-500 flex items-center gap-1">
-            <span className="text-green-600 font-bold flex items-center"><ArrowUp size={14} /> 18.3%</span> vs last 30 days
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <span className="text-sm text-slate-500 font-medium block mb-2">Total Orders</span>
-              <h3 className="text-3xl font-extrabold m-0">8,942</h3>
-            </div>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-orange-100 text-orange-600 shrink-0">
-              <ShoppingBag size={24} />
-            </div>
-          </div>
-          <div className="text-xs text-slate-500 flex items-center gap-1">
-            <span className="text-green-600 font-bold flex items-center"><ArrowUp size={14} /> 22.7%</span> vs last 30 days
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <span className="text-sm text-slate-500 font-medium block mb-2">Total Revenue</span>
-              <h3 className="text-3xl font-extrabold m-0">₹24,85,320</h3>
-            </div>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-green-100 text-green-600 shrink-0">
-              <IndianRupee size={24} />
-            </div>
-          </div>
-          <div className="text-xs text-slate-500 flex items-center gap-1">
-            <span className="text-green-600 font-bold flex items-center"><ArrowUp size={14} /> 28.4%</span> vs last 30 days
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Real API Status Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-green-50 border border-green-200 rounded-xl p-4 lg:p-5">
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-green-800 font-semibold flex items-center gap-1.5">
-            {health?.status === 'ok' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} className="text-red-600" />}
+      {/* System Health Status Bar */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800/50 rounded-2xl p-5 shadow-sm">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+            {health?.status === 'ok' ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <AlertCircle size={14} className="text-red-400" />}
             API Status
           </span>
-          <span className={`text-sm font-bold ${health?.status !== 'ok' ? 'text-red-600' : 'text-green-700'}`}>
-            {health?.status === 'ok' ? 'Healthy' : 'Down'}
+          <span className={`text-sm font-bold ${health?.status !== 'ok' ? 'text-red-400' : 'text-white'}`}>
+            {health?.status === 'ok' ? 'Healthy' : health === null ? 'Checking…' : 'Down'}
           </span>
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-green-800 font-semibold flex items-center gap-1.5">
-            {health?.services.database === 'ok' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} className="text-red-600" />}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+            {health?.services.database === 'up' ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <AlertCircle size={14} className="text-red-400" />}
             Database
           </span>
-          <span className={`text-sm font-bold ${health?.services.database !== 'ok' ? 'text-red-600' : 'text-green-700'}`}>
-            {health?.services.database === 'ok' ? 'Operational' : 'Error'}
+          <span className={`text-sm font-bold ${health?.services.database !== 'up' ? 'text-red-400' : 'text-white'}`}>
+            {health?.services.database === 'up' ? 'Operational' : 'Error'}
           </span>
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-green-800 font-semibold flex items-center gap-1.5">
-            {health?.services.redis === 'ok' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} className="text-red-600" />}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+            {health?.services.redis === 'up' ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <AlertCircle size={14} className="text-amber-400" />}
             Redis
           </span>
-          <span className={`text-sm font-bold ${health?.services.redis !== 'ok' ? 'text-red-600' : 'text-green-700'}`}>
-            {health?.services.redis === 'ok' ? 'Operational' : 'Error'}
+          <span className={`text-sm font-bold ${health?.services.redis !== 'up' ? 'text-amber-400' : 'text-white'}`}>
+            {health?.services.redis === 'up' ? 'Operational' : 'Fallback'}
           </span>
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-green-800 font-semibold flex items-center gap-1.5">Server Load</span>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Server Load</span>
           <div className="flex items-center gap-3">
-            <span className="text-sm font-bold text-green-700">32%</span>
-            <div className="sparkline-mock"></div>
+            <span className="text-sm font-bold text-white">32%</span>
+            <div className="sparkline-mock flex-1 h-1.5 bg-emerald-800 rounded-full overflow-hidden">
+              <div className="h-full w-1/3 bg-emerald-400 rounded-full"></div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Charts & Lists Grid Row 1 */}
+      {/* Row 1: Sales Overview & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-6">
         {/* Sales Overview */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold m-0">Sales Overview</h3>
-            <button className="bg-white border border-slate-200 px-3 py-1 rounded-md text-xs font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">This Month</button>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold tracking-tight m-0">Sales Overview</h3>
+            <button className="appearance-none px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100">
+              This Month
+            </button>
           </div>
-          <div className="relative">
-            <span className="text-sm text-slate-500 font-medium mb-2 block">Total Sales</span>
-            <div className="flex items-center gap-3 text-2xl font-extrabold mb-5">
+          <div className="mb-6">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Sales</span>
+            <div className="flex items-end gap-3 text-4xl font-black tracking-tight">
               ₹24,85,320
-              <span className="text-sm text-green-600 font-bold flex items-center"><ArrowUp size={16} /> 28.4% <span className="text-slate-400 font-normal ml-1">vs last month</span></span>
+              <span className="flex items-center text-sm text-emerald-600 font-bold mb-1.5">
+                <TrendingUp size={16} className="mr-1" strokeWidth={3} /> 28.4%
+                <span className="text-slate-400 font-medium text-xs ml-1.5 tracking-normal">vs last month</span>
+              </span>
             </div>
-            
-            <div className="sales-chart-img"></div>
-            
-            <div className="flex justify-between text-center pt-4">
-              <div className="flex flex-col">
-                <strong className="text-base font-bold">₹8,45,210</strong>
-                <span className="text-xs text-slate-500">This Week</span>
+          </div>
+          <div className="sales-chart-img flex-1 min-h-[160px]"></div>
+          <div className="flex justify-between border-t border-slate-100 pt-5 mt-4">
+            {[
+              { label: 'This Week', value: '₹8,45,210' },
+              { label: 'Today', value: '₹2,35,640' },
+              { label: 'Orders', value: '12,458' },
+              { label: 'Avg. Order Value', value: '₹278' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center px-2">
+                <strong className="block text-lg font-extrabold mb-1">{stat.value}</strong>
+                <span className="text-xs font-medium text-slate-500">{stat.label}</span>
               </div>
-              <div className="flex flex-col">
-                <strong className="text-base font-bold">₹2,35,640</strong>
-                <span className="text-xs text-slate-500">Today</span>
-              </div>
-              <div className="flex flex-col">
-                <strong className="text-base font-bold">12,458</strong>
-                <span className="text-xs text-slate-500">Orders</span>
-              </div>
-              <div className="flex flex-col">
-                <strong className="text-base font-bold">₹278</strong>
-                <span className="text-xs text-slate-500">Avg. Order Value</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold m-0">Recent Orders</h3>
-            <button className="bg-white border border-slate-200 px-3 py-1 rounded-md text-xs font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">View All</button>
+            <h3 className="text-lg font-bold tracking-tight m-0">Recent Orders</h3>
+            <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+              View All <ArrowRight size={14} />
+            </button>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3 w-[40%]">
-                <span className="text-xs text-slate-500">#ORD12548</span>
-                <div className="w-6 h-6 rounded-full bg-slate-200"></div>
-                <span className="text-sm font-semibold">Karthik R.</span>
+          <div className="flex flex-col gap-1 flex-1">
+            {[
+              { id: '#ORD12548', name: 'Karthik R.', amount: '₹1,250', status: 'Delivered', statusStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: '2 mins ago', initials: 'KR' },
+              { id: '#ORD12547', name: 'Priya S.', amount: '₹850', status: 'Processing', statusStyle: 'bg-yellow-50 text-yellow-700 border-yellow-200', time: '10 mins ago', initials: 'PS' },
+              { id: '#ORD12546', name: 'Arun M.', amount: '₹1,560', status: 'Shipped', statusStyle: 'bg-blue-50 text-blue-700 border-blue-200', time: '25 mins ago', initials: 'AM' },
+              { id: '#ORD12545', name: 'Meena K.', amount: '₹620', status: 'Pending', statusStyle: 'bg-orange-50 text-orange-700 border-orange-200', time: '45 mins ago', initials: 'MK' },
+              { id: '#ORD12544', name: 'Suresh B.', amount: '₹980', status: 'Delivered', statusStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200', time: '1 hour ago', initials: 'SB' },
+            ].map((order, i) => (
+              <div key={i} className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0 group hover:bg-slate-50/50 rounded-xl px-2 -mx-2 transition-colors cursor-default">
+                <div className="flex items-center gap-3 w-[45%]">
+                  <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
+                    {order.initials}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold m-0 leading-tight">{order.name}</p>
+                    <p className="text-xs text-slate-400 m-0">{order.id}</p>
+                  </div>
+                </div>
+                <span className="text-sm font-bold w-[20%]">{order.amount}</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-bold border ${order.statusStyle}`}>{order.status}</span>
+                <span className="text-xs text-slate-400 w-[18%] text-right">{order.time}</span>
               </div>
-              <span className="text-sm font-semibold w-[20%] text-left">₹1,250</span>
-              <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">Delivered</span>
-              <span className="text-xs text-slate-400 w-[20%] text-right">2 mins ago</span>
-            </div>
-            
-            <div className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3 w-[40%]">
-                <span className="text-xs text-slate-500">#ORD12547</span>
-                <div className="w-6 h-6 rounded-full bg-slate-200"></div>
-                <span className="text-sm font-semibold">Priya S.</span>
-              </div>
-              <span className="text-sm font-semibold w-[20%] text-left">₹850</span>
-              <span className="px-2 py-1 rounded text-xs font-semibold bg-yellow-100 text-yellow-800">Processing</span>
-              <span className="text-xs text-slate-400 w-[20%] text-right">10 mins ago</span>
-            </div>
-
-            <div className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3 w-[40%]">
-                <span className="text-xs text-slate-500">#ORD12546</span>
-                <div className="w-6 h-6 rounded-full bg-slate-200"></div>
-                <span className="text-sm font-semibold">Arun M.</span>
-              </div>
-              <span className="text-sm font-semibold w-[20%] text-left">₹1,560</span>
-              <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800">Shipped</span>
-              <span className="text-xs text-slate-400 w-[20%] text-right">25 mins ago</span>
-            </div>
-
-            <div className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3 w-[40%]">
-                <span className="text-xs text-slate-500">#ORD12545</span>
-                <div className="w-6 h-6 rounded-full bg-slate-200"></div>
-                <span className="text-sm font-semibold">Meena K.</span>
-              </div>
-              <span className="text-sm font-semibold w-[20%] text-left">₹620</span>
-              <span className="px-2 py-1 rounded text-xs font-semibold bg-orange-100 text-orange-800">Pending</span>
-              <span className="text-xs text-slate-400 w-[20%] text-right">45 mins ago</span>
-            </div>
-
-            <div className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3 w-[40%]">
-                <span className="text-xs text-slate-500">#ORD12544</span>
-                <div className="w-6 h-6 rounded-full bg-slate-200"></div>
-                <span className="text-sm font-semibold">Suresh B.</span>
-              </div>
-              <span className="text-sm font-semibold w-[20%] text-left">₹980</span>
-              <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">Delivered</span>
-              <span className="text-xs text-slate-400 w-[20%] text-right">1 hour ago</span>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Charts & Lists Grid Row 2 */}
+      {/* Row 2: Top Categories & Top Vendors */}
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-6">
         {/* Top Categories */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold m-0">Top Categories</h3>
-            <button className="bg-white border border-slate-200 px-3 py-1 rounded-md text-xs font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">View All</button>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold tracking-tight m-0">Top Categories</h3>
+            <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+              View All <ArrowRight size={14} />
+            </button>
           </div>
           <div className="flex flex-col gap-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 w-[35%]">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-red-500"><Apple size={16} /></div>
-                <span className="text-sm font-semibold">Fruits & Vegetables</span>
+            {[
+              { name: 'Fruits & Vegetables', orders: '1,245 Orders', pct: '100%', icon: Apple, color: 'text-orange-500', bg: 'bg-orange-50' },
+              { name: 'Dairy & Bakery', orders: '987 Orders', pct: '80%', icon: Milk, color: 'text-blue-500', bg: 'bg-blue-50' },
+              { name: 'Groceries & Staples', orders: '856 Orders', pct: '65%', icon: PackageSearch, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+              { name: 'Beverages', orders: '642 Orders', pct: '45%', icon: CupSoda, color: 'text-amber-500', bg: 'bg-amber-50' },
+              { name: 'Snacks & Branded', orders: '528 Orders', pct: '30%', icon: Cookie, color: 'text-purple-500', bg: 'bg-purple-50' },
+            ].map((cat, i) => (
+              <div key={i} className="flex items-center justify-between group cursor-default">
+                <div className="flex items-center gap-3.5 w-[38%]">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${cat.bg} ${cat.color}`}>
+                    <cat.icon size={16} strokeWidth={2.5} />
+                  </div>
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{cat.name}</span>
+                </div>
+                <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden">
+                  <div className="h-full bg-slate-800 rounded-full transition-all duration-500" style={{ width: cat.pct }}></div>
+                </div>
+                <span className="text-xs font-bold text-slate-500 w-[22%] text-right">{cat.orders}</span>
               </div>
-              <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden"><div className="h-full bg-green-500 rounded-full w-full"></div></div>
-              <span className="text-xs text-slate-500 w-[20%] text-right">1,245 Orders</span>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 w-[35%]">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-blue-500"><Milk size={16} /></div>
-                <span className="text-sm font-semibold">Dairy & Bakery</span>
-              </div>
-              <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden"><div className="h-full bg-green-500 rounded-full w-[80%]"></div></div>
-              <span className="text-xs text-slate-500 w-[20%] text-right">987 Orders</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 w-[35%]">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-emerald-500"><PackageSearch size={16} /></div>
-                <span className="text-sm font-semibold">Groceries & Staples</span>
-              </div>
-              <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden"><div className="h-full bg-green-500 rounded-full w-[65%]"></div></div>
-              <span className="text-xs text-slate-500 w-[20%] text-right">856 Orders</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 w-[35%]">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-amber-500"><CupSoda size={16} /></div>
-                <span className="text-sm font-semibold">Beverages</span>
-              </div>
-              <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden"><div className="h-full bg-green-500 rounded-full w-[45%]"></div></div>
-              <span className="text-xs text-slate-500 w-[20%] text-right">642 Orders</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 w-[35%]">
-                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-purple-500"><Cookie size={16} /></div>
-                <span className="text-sm font-semibold">Snacks & Branded</span>
-              </div>
-              <div className="flex-1 h-2 bg-slate-100 rounded-full mx-4 overflow-hidden"><div className="h-full bg-green-500 rounded-full w-[30%]"></div></div>
-              <span className="text-xs text-slate-500 w-[20%] text-right">528 Orders</span>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Top Vendors */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        {/* Top Vendors Table */}
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-5">
-            <h3 className="text-base font-bold m-0">Top Vendors</h3>
-            <button className="bg-white border border-slate-200 px-3 py-1 rounded-md text-xs font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">View All</button>
+            <h3 className="text-lg font-bold tracking-tight m-0">Top Vendors</h3>
+            <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+              View All <ArrowRight size={14} />
+            </button>
           </div>
-          <div className="w-full overflow-x-auto">
+          <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th className="text-xs text-slate-500 font-normal pb-3 border-b border-slate-200">Vendor</th>
-                  <th className="text-xs text-slate-500 font-normal pb-3 border-b border-slate-200">Orders</th>
-                  <th className="text-xs text-slate-500 font-normal pb-3 border-b border-slate-200">Revenue</th>
-                  <th className="text-xs text-slate-500 font-normal pb-3 border-b border-slate-200">Rating</th>
+                <tr className="border-b border-slate-100">
+                  <th className="text-xs font-bold uppercase tracking-wider text-slate-400 pb-3 pr-4">Vendor</th>
+                  <th className="text-xs font-bold uppercase tracking-wider text-slate-400 pb-3 pr-4">Orders</th>
+                  <th className="text-xs font-bold uppercase tracking-wider text-slate-400 pb-3 pr-4">Revenue</th>
+                  <th className="text-xs font-bold uppercase tracking-wider text-slate-400 pb-3">Rating</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="border-b border-slate-50 last:border-0">
-                  <td className="py-3 pr-4">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <div className="w-7 h-7 bg-slate-100 rounded-md flex items-center justify-center text-blue-500"><Store size={14} /></div>
-                      Fresh Mart
-                    </div>
-                  </td>
-                  <td className="py-3 pr-4">1,245</td>
-                  <td className="py-3 pr-4 font-medium text-slate-600">₹3,45,210</td>
-                  <td className="py-3"><span className="inline-flex items-center gap-1 font-semibold text-slate-700">4.8 <Star size={12} fill="#eab308" color="#eab308"/></span></td>
-                </tr>
-                <tr className="border-b border-slate-50 last:border-0">
-                  <td className="py-3 pr-4">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <div className="w-7 h-7 bg-slate-100 rounded-md flex items-center justify-center text-emerald-500"><Store size={14} /></div>
-                      Green Basket
-                    </div>
-                  </td>
-                  <td className="py-3 pr-4">987</td>
-                  <td className="py-3 pr-4 font-medium text-slate-600">₹2,85,640</td>
-                  <td className="py-3"><span className="inline-flex items-center gap-1 font-semibold text-slate-700">4.7 <Star size={12} fill="#eab308" color="#eab308"/></span></td>
-                </tr>
-                <tr className="border-b border-slate-50 last:border-0">
-                  <td className="py-3 pr-4">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <div className="w-7 h-7 bg-slate-100 rounded-md flex items-center justify-center text-amber-500"><Store size={14} /></div>
-                      Daily Needs
-                    </div>
-                  </td>
-                  <td className="py-3 pr-4">856</td>
-                  <td className="py-3 pr-4 font-medium text-slate-600">₹2,15,320</td>
-                  <td className="py-3"><span className="inline-flex items-center gap-1 font-semibold text-slate-700">4.6 <Star size={12} fill="#eab308" color="#eab308"/></span></td>
-                </tr>
-                <tr className="border-b border-slate-50 last:border-0">
-                  <td className="py-3 pr-4">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <div className="w-7 h-7 bg-slate-100 rounded-md flex items-center justify-center text-red-500"><Store size={14} /></div>
-                      Super Store
-                    </div>
-                  </td>
-                  <td className="py-3 pr-4">642</td>
-                  <td className="py-3 pr-4 font-medium text-slate-600">₹1,65,980</td>
-                  <td className="py-3"><span className="inline-flex items-center gap-1 font-semibold text-slate-700">4.5 <Star size={12} fill="#eab308" color="#eab308"/></span></td>
-                </tr>
-                <tr className="border-b border-slate-50 last:border-0">
-                  <td className="py-3 pr-4">
-                    <div className="flex items-center gap-2 font-semibold">
-                      <div className="w-7 h-7 bg-slate-100 rounded-md flex items-center justify-center text-purple-500"><Store size={14} /></div>
-                      Quick Shop
-                    </div>
-                  </td>
-                  <td className="py-3 pr-4">528</td>
-                  <td className="py-3 pr-4 font-medium text-slate-600">₹1,25,430</td>
-                  <td className="py-3"><span className="inline-flex items-center gap-1 font-semibold text-slate-700">4.4 <Star size={12} fill="#eab308" color="#eab308"/></span></td>
-                </tr>
+                {[
+                  { name: 'Fresh Mart', orders: '1,245', rev: '₹3,45,210', rating: '4.8', color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { name: 'Green Basket', orders: '987', rev: '₹2,85,640', rating: '4.7', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { name: 'Daily Needs', orders: '856', rev: '₹2,15,320', rating: '4.6', color: 'text-amber-600', bg: 'bg-amber-50' },
+                  { name: 'Super Store', orders: '642', rev: '₹1,65,980', rating: '4.5', color: 'text-red-500', bg: 'bg-red-50' },
+                  { name: 'Quick Shop', orders: '528', rev: '₹1,25,430', rating: '4.4', color: 'text-purple-500', bg: 'bg-purple-50' },
+                ].map((v, i) => (
+                  <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors group cursor-default">
+                    <td className="py-3 pr-4">
+                      <div className="flex items-center gap-2.5 font-bold">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${v.bg} ${v.color}`}>
+                          <Store size={13} strokeWidth={2.5} />
+                        </div>
+                        <span className="group-hover:text-slate-900 transition-colors">{v.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 pr-4 font-semibold text-slate-600">{v.orders}</td>
+                    <td className="py-3 pr-4 font-bold text-slate-800">{v.rev}</td>
+                    <td className="py-3">
+                      <span className="inline-flex items-center gap-1 font-bold text-slate-700">
+                        {v.rating} <Star size={12} fill="#f59e0b" color="#f59e0b" strokeWidth={0} />
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

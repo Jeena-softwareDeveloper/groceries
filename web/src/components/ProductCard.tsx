@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { formatPrice, type ProductSummary } from '../api/client';
+import { formatPrice, type ProductSummary } from '../api';
 
 interface ProductCardProps {
   product: ProductSummary;

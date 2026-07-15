@@ -1,156 +1,210 @@
-import { useEffect, useState } from 'react';
-import { api, type ApiResponse } from '../api/client';
-import { Filter, Plus, ChevronsUpDown, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-
-interface Area {
-  id: string;
-  name: string;
-  pincode?: string;
-  isActive: boolean;
-  district: { id: string; name: string };
-}
-
-interface District {
-  id: string;
-  name: string;
-}
+import { useState, useEffect } from 'react';
+import { MapPin, Plus, X, Eye, Edit, Trash2 } from 'lucide-react';
+import { areaApi, districtApi } from '../api';
+import { useApiData } from '../hooks';
+import { PageHeader, SearchBar, DataTable, Pagination, StatusBadge, EmptyState, ColumnDef } from '../components/ui';
+import type { Area } from '../types';
 
 export default function AreasPage() {
-  const [areas, setAreas] = useState<Area[]>([]);
-  const [districts, setDistricts] = useState<District[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Form state
+  const { data: areas = [], loading, refetch: refetchAreas } = useApiData(() => areaApi.getAll());
+  const { data: districts = [] } = useApiData(() => districtApi.getAll());
+  
   const [showForm, setShowForm] = useState(false);
   const [districtId, setDistrictId] = useState('');
   const [name, setName] = useState('');
   const [pincode, setPincode] = useState('');
-
-  const load = () => {
-    api.get<ApiResponse<Area[]>>('/admin/areas').then((res) => {
-      setAreas(res.data.data);
-      setLoading(false);
-    });
-    api.get<ApiResponse<District[]>>('/admin/districts').then((res) => {
-      setDistricts(res.data.data);
-      if (res.data.data[0] && !districtId) setDistrictId(res.data.data[0].id);
-    });
-  };
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    load();
-  }, []);
+    if (districts.length > 0 && !districtId) {
+      setDistrictId(districts[0].id);
+    }
+  }, [districts, districtId]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/areas', { districtId, name, pincode, isActive: true });
+    await areaApi.create({ districtId, name, pincode, isActive: true });
     setName('');
     setPincode('');
     setShowForm(false);
-    load();
+    refetchAreas();
   };
 
-  return (
-    <div className="text-slate-900">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="m-0 text-2xl text-slate-900 font-bold">Areas</h1>
+  const filteredAreas = areas.filter(a => 
+    a.name.toLowerCase().includes(search.toLowerCase()) || 
+    (a.pincode && a.pincode.toLowerCase().includes(search.toLowerCase())) ||
+    a.district.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const columns: ColumnDef<Area>[] = [
+    {
+      key: 'id',
+      header: '#',
+      headerClassName: 'pl-6',
+      cellClassName: 'pl-6 font-semibold text-slate-400',
+      cell: (_, index) => String(index + 1).padStart(2, '0')
+    },
+    {
+      key: 'name',
+      header: 'Area Name',
+      cell: (a) => (
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-white border border-green-600 text-green-600 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-50">
-            <Filter size={16} /> Filters
+          <div className="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+            <MapPin size={14} className="text-blue-500" strokeWidth={2.5} />
+          </div>
+          <span className="font-bold text-slate-900">{a.name}</span>
+        </div>
+      )
+    },
+    {
+      key: 'district',
+      header: 'District',
+      cellClassName: 'font-medium text-slate-600',
+      cell: (a) => a.district.name
+    },
+    {
+      key: 'pincode',
+      header: 'Pincode',
+      cell: (a) => a.pincode ? (
+        <span className="bg-slate-100 text-slate-500 border border-slate-200 px-2.5 py-1 rounded-lg text-xs font-bold font-mono">
+          {a.pincode}
+        </span>
+      ) : (
+        <span className="text-slate-300 font-medium">—</span>
+      )
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      cell: (a) => (
+        <StatusBadge 
+          status={a.isActive ? 'Active' : 'Inactive'} 
+          colorMap={{
+            Active: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+            Inactive: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' }
+          }} 
+        />
+      )
+    },
+    {
+      key: 'created',
+      header: 'Created On',
+      cellClassName: 'font-medium text-slate-500',
+      cell: () => '12 Jul 2025' // Hardcoded as per original
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      headerClassName: 'pr-6',
+      cellClassName: 'pr-6',
+      cell: () => (
+        <div className="flex items-center gap-2">
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-400 cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors">
+            <Eye size={14} strokeWidth={2.5} />
           </button>
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
-            <Plus size={16} /> Add Area
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-400 cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors">
+            <Edit size={14} strokeWidth={2.5} />
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-red-400 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors">
+            <Trash2 size={14} strokeWidth={2.5} />
           </button>
         </div>
-      </div>
+      )
+    }
+  ];
+
+  return (
+    <div className="flex flex-col gap-6 w-full max-w-[1600px] mx-auto pb-12 text-slate-900">
+      <PageHeader 
+        title="Areas" 
+        description="Manage delivery areas and their district mappings." 
+        action={
+          <button
+            className="flex items-center gap-2 bg-slate-900 border border-transparent text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm hover:bg-slate-800 transition-all"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? <X size={16} strokeWidth={2.5} /> : <Plus size={16} strokeWidth={2.5} />}
+            {showForm ? 'Cancel' : 'Add Area'}
+          </button>
+        }
+      />
 
       {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={handleCreate}>
-          <select className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all bg-white" value={districtId} onChange={(e) => setDistrictId(e.target.value)} required>
-            {districts.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
-              </option>
-            ))}
-          </select>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Area name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Area</button>
+        <form
+          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-2xl border border-slate-200/75 shadow-sm"
+          onSubmit={handleCreate}
+        >
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">District</label>
+            <select
+              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-48 appearance-none"
+              value={districtId}
+              onChange={(e) => setDistrictId(e.target.value)}
+              required
+            >
+              {districts.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Area Name</label>
+            <input
+              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-52"
+              placeholder="e.g. Koramangala"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Pincode <span className="text-slate-300 normal-case font-medium">(optional)</span></label>
+            <input
+              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36"
+              placeholder="e.g. 560034"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value)}
+            />
+          </div>
+          <button
+            type="submit"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+          >
+            Save Area
+          </button>
         </form>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        {loading ? (
-          <p className="p-6 m-0 text-slate-500">Loading…</p>
-        ) : (
-          <>
-            <div className="overflow-x-auto w-full">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">#</th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Area Name <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">District <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Pincode <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Status <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Created On <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {areas.map((a, index) => {
-                    return (
-                      <tr key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                        <td className="p-4 text-sm font-medium text-slate-900">{index + 1}</td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{a.name}</td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{a.district.name}</td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{a.pincode ?? '—'}</td>
-                        <td className="p-4 text-sm align-middle">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${a.isActive ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
-                            {a.isActive ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td className="p-4 text-sm font-medium text-slate-900">12 Jul 2025</td>
-                        <td className="p-4 text-sm align-middle">
-                          <div className="flex items-center gap-2">
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Eye size={14} /></button>
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+      <SearchBar 
+        value={search} 
+        onChange={setSearch} 
+        placeholder="Search areas..." 
+        totalCount={areas.length} 
+        totalLabel="total areas"
+      />
 
-            <div className="flex items-center justify-between p-4 px-6 border-t border-slate-200 bg-white">
-              <span className="text-sm text-slate-500">Showing 1 to {areas.length} of {areas.length} results</span>
-              <div className="flex items-center gap-2">
-                <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 transition-colors"><ChevronLeft size={16} /></button>
-                <button className="w-8 h-8 flex items-center justify-center bg-green-600 border border-green-600 rounded-md text-white font-medium cursor-pointer">1</button>
-                <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 transition-colors"><ChevronRight size={16} /></button>
-                <select className="ml-4 px-3 py-1.5 border border-slate-200 rounded-md bg-white text-sm text-slate-600 outline-none cursor-pointer">
-                  <option>10 / page</option>
-                  <option>20 / page</option>
-                  <option>50 / page</option>
-                </select>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      <DataTable 
+        columns={columns}
+        data={filteredAreas}
+        loading={loading}
+        emptyState={
+          <EmptyState 
+            icon={MapPin} 
+            title="No areas found" 
+            description={search ? "No areas match your search." : "Add your first area to get started."}
+          />
+        }
+        pagination={
+          filteredAreas.length > 0 && (
+            <Pagination 
+              total={filteredAreas.length}
+              page={1}
+              limit={10}
+              entityName="areas"
+            />
+          )
+        }
+      />
     </div>
   );
 }

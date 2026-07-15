@@ -48,7 +48,7 @@ export async function createProduct(vendorId: string, data: Record<string, unkno
     data: {
       vendorId, categoryId, subCategoryId, name, slug, description, brand,
       mrp, sellingPrice, unit, weight,
-      tags: (tags ?? []) as ('FEATURED' | 'BEST_SELLER' | 'NEW_ARRIVAL' | 'INSTANT_DELIVERY')[],
+      tags: Array.isArray(tags) ? tags.join(',') : (typeof tags === 'string' ? tags : null),
       inventory: { create: { stock: stock ?? 0 } },
     },
     include: { inventory: true, category: true },

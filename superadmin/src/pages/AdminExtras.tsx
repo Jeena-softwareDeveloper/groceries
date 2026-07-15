@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, type ApiResponse } from '../api/client';
+import { adminExtrasApi } from '../api';
 import { Filter, Plus, ChevronsUpDown, Eye, Edit, Trash2, ChevronLeft, ChevronRight, Ban, Send, Check } from 'lucide-react';
 
 // Generic Pagination component to avoid repetition
@@ -24,12 +24,12 @@ export function BannersPage() {
   const [title, setTitle] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const load = () => api.get<ApiResponse<typeof banners>>('/admin/banners').then((r) => setBanners(r.data.data));
+  const load = () => adminExtrasApi.banners.getAll().then((r) => setBanners(r.data));
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/banners', { title, imageUrl: 'https://placehold.co/800x300', isActive: true });
+    await adminExtrasApi.banners.create({ title, imageUrl: 'https://placehold.co/800x300', isActive: true });
     setTitle('');
     setShowForm(false);
     load();
@@ -96,11 +96,11 @@ export function BannersPage() {
 
 export function CustomersPage() {
   const [customers, setCustomers] = useState<Array<{ id: string; phone: string; name?: string; isBlocked: boolean }>>([]);
-  const load = () => api.get<ApiResponse<typeof customers>>('/admin/customers').then((r) => setCustomers(r.data.data));
+  const load = () => adminExtrasApi.customers.getAll().then((r) => setCustomers(r.data));
   useEffect(() => { load(); }, []);
 
   const toggleBlock = async (id: string, block: boolean) => {
-    await api.post(`/admin/customers/${id}/${block ? 'block' : 'unblock'}`);
+    await adminExtrasApi.customers.block(id, block);
     load();
   };
 
@@ -161,12 +161,12 @@ export function MicroBannersPage() {
   const [title, setTitle] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const load = () => api.get<ApiResponse<typeof items>>('/admin/micro-banners').then((r) => setItems(r.data.data));
+  const load = () => adminExtrasApi.microBanners.getAll().then((r) => setItems(r.data));
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/micro-banners', { title, imageUrl: 'https://placehold.co/400x100', isActive: true });
+    await adminExtrasApi.microBanners.create({ title, imageUrl: 'https://placehold.co/400x100', isActive: true });
     setTitle('');
     setShowForm(false);
     load();
@@ -237,13 +237,14 @@ export function DeliveryChargesPage() {
   const [charge, setCharge] = useState('29');
   const [showForm, setShowForm] = useState(false);
 
-  const load = () => api.get<ApiResponse<typeof rules>>('/admin/delivery-charges').then((r) => setRules(r.data.data));
+  const load = () => adminExtrasApi.deliveryCharges.getAll().then((r) => setRules(r.data));
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/delivery-charges', { name, charge: Number(charge), minDistance: 0, maxDistance: 10, freeAbove: 199, isActive: true });
+    await adminExtrasApi.deliveryCharges.create({ name, charge: Number(charge), minDistance: 0, maxDistance: 10, freeAbove: 199, isActive: true });
     setName('');
+    setCharge('');
     setShowForm(false);
     load();
   };
@@ -312,12 +313,12 @@ export function OffersPage() {
   const [title, setTitle] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const load = () => api.get<ApiResponse<typeof offers>>('/admin/offers').then((r) => setOffers(r.data.data));
+  const load = () => adminExtrasApi.offers.getAll().then((r) => setOffers(r.data));
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/offers', { title, scope: 'PLATFORM', discountAmt: 10, isActive: true });
+    await adminExtrasApi.offers.create({ title, scope: 'PLATFORM', discountAmt: 10, isActive: true });
     setTitle('');
     setShowForm(false);
     load();
@@ -384,12 +385,12 @@ export function CouponsPage() {
   const [code, setCode] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const load = () => api.get<ApiResponse<typeof coupons>>('/admin/coupons').then((r) => setCoupons(r.data.data));
+  const load = () => adminExtrasApi.coupons.getAll().then((r) => setCoupons(r.data));
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/coupons', { code, discountAmt: 50, minOrder: 200, isActive: true, scope: 'PLATFORM' });
+    await adminExtrasApi.coupons.create({ code, discountAmt: 50, minOrder: 200, isActive: true, scope: 'PLATFORM' });
     setCode('');
     setShowForm(false);
     load();
@@ -458,8 +459,8 @@ export function NotificationsPage() {
 
   const broadcast = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await api.post<ApiResponse<{ sent: number }>>('/admin/notifications/broadcast', { title, body });
-    setSent(res.data.data.sent);
+    const res = await adminExtrasApi.notifications.broadcast({ title, body });
+    setSent(res.data.sent);
   };
 
   return (

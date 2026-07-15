@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getDistrictId, getTrendingSearches, searchProducts } from '../api/client';
+import { productApi } from '../api';
 
 export default function SearchPage() {
   const [q, setQ] = useState('');
-  const [results, setResults] = useState<Awaited<ReturnType<typeof searchProducts>> | null>(null);
+  const [results, setResults] = useState<Awaited<ReturnType<typeof productApi.searchProducts>> | null>(null);
   const [trending, setTrending] = useState<Array<{ query: string }>>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => { getTrendingSearches().then(setTrending).catch(() => {}); }, []);
+  useEffect(() => { productApi.getTrendingSearches().then(setTrending).catch(() => {}); }, []);
 
   useEffect(() => {
     if (!q.trim()) { setResults(null); return; }
     const t = setTimeout(() => {
       setLoading(true);
-      searchProducts(q.trim())
+      productApi.searchProducts(q.trim())
         .then(setResults)
         .finally(() => setLoading(false));
     }, 300);

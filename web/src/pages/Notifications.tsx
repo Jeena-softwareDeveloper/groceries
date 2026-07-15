@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { fetchNotifications } from '../api/client';
+import { notificationApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function NotificationsPage() {
   const { isAuthenticated } = useAuth();
-  const [items, setItems] = useState<Awaited<ReturnType<typeof fetchNotifications>>>([]);
-  useEffect(() => { if (isAuthenticated) fetchNotifications().then(setItems).catch(() => {}); }, [isAuthenticated]);
+  const [items, setItems] = useState<Awaited<ReturnType<typeof notificationApi.fetchNotifications>>>([]);
+  useEffect(() => { if (isAuthenticated) notificationApi.fetchNotifications().then(setItems).catch(() => {}); }, [isAuthenticated]);
   if (!isAuthenticated) return null;
   return (
     <div className="page-container">

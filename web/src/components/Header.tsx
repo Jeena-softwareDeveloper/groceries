@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getCart } from '../api/client';
+import { cartApi } from '../api';
 
 export default function Header() {
   const { isAuthenticated, logout } = useAuth();
@@ -13,7 +13,7 @@ export default function Header() {
       setCartCount(0);
       return;
     }
-    getCart()
+    cartApi.getCart()
       .then((cart) => setCartCount(cart.items.reduce((sum, i) => sum + i.quantity, 0)))
       .catch(() => setCartCount(0));
   }, [isAuthenticated, location.pathname]);

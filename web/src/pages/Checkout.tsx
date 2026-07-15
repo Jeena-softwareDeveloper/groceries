@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  checkout,
-  createAddress,
+  orderApi,
+  customerApi,
+  cartApi,
   formatPrice,
-  getCart,
-  listAddresses,
   type Address,
   type Cart,
-} from '../api/client';
+} from '../api';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    Promise.all([getCart(), listAddresses()])
+    Promise.all([cartApi.getCart(), customerApi.listAddresses()])
       .then(([cartData, addressData]) => {
         setCart(cartData);
         setAddresses(addressData);
@@ -53,7 +52,7 @@ export default function CheckoutPage() {
     e.preventDefault();
     setError(null);
     try {
-      const addr = await createAddress(newAddress);
+      const addr = await customerApi.createAddress(newAddress);
       setAddresses((prev) => [...prev, addr]);
       setSelectedAddressId(addr.id);
       setShowAddressForm(false);
@@ -70,7 +69,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const result = await checkout(selectedAddressId, paymentMethod);
+      const result = await orderApi.checkout(selectedAddressId, paymentMethod);
       navigate('/orders', { state: { newOrders: result.orders } });
     } catch (err: unknown) {
       const msg =

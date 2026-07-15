@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { addToCart, formatPrice, getProduct, type Product } from '../api/client';
+import { cartApi, formatPrice, productApi, type Product } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProductPage() {
@@ -15,7 +15,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!id) return;
-    getProduct(id)
+    productApi.getProduct(id)
       .then(setProduct)
       .catch(() => setError('Product not found'))
       .finally(() => setLoading(false));
@@ -33,7 +33,7 @@ export default function ProductPage() {
     if (!product) return;
     setAdding(true);
     try {
-      await addToCart(product.id, quantity);
+      await cartApi.addToCart(product.id, quantity);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
     } catch {

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { formatPrice, type ShopSummary } from '../api/client';
+import { formatPrice, type ShopSummary } from '../api';
 
 interface ShopCardProps {
   shop: ShopSummary;

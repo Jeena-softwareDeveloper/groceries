@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { getMe, logoutApi, type CustomerProfile } from '../api/client';
+import { authApi, type CustomerProfile } from '../api';
 
 interface AuthContextType {
   user: CustomerProfile | null;
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       return;
     }
-    const profile = await getMe();
+    const profile = await authApi.getMe();
     setUser(profile);
   };
 
@@ -32,14 +32,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    getMe()
+    authApi.getMe()
       .then(setUser)
       .catch(() => localStorage.clear())
       .finally(() => setLoading(false));
   }, []);
 
   const logout = () => {
-    logoutApi().catch(() => {});
+    authApi.logout(localStorage.getItem('refreshToken') ?? '').catch(() => {});
     localStorage.clear();
     setUser(null);
   };

@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import { createSupportTicket, listSupportTickets } from '../api/client';
+import { customerApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function SupportPage() {
   const { isAuthenticated } = useAuth();
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-  const [tickets, setTickets] = useState<Awaited<ReturnType<typeof listSupportTickets>>>([]);
+  const [tickets, setTickets] = useState<Awaited<ReturnType<typeof customerApi.listSupportTickets>>>([]);
   const [sent, setSent] = useState(false);
 
-  const load = () => listSupportTickets().then(setTickets).catch(() => {});
+  const load = () => customerApi.listSupportTickets().then(setTickets).catch(() => {});
   useEffect(() => { if (isAuthenticated) load(); }, [isAuthenticated]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createSupportTicket(subject, message);
+    await customerApi.createSupportTicket(subject, message);
     setSubject(''); setMessage(''); setSent(true); load();
   };
 

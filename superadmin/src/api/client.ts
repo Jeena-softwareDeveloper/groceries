@@ -1,14 +1,15 @@
 import axios from 'axios';
+import { STORAGE_KEYS } from '../constants';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:4000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:4000/api/v1';
 
 export const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -17,8 +18,8 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/vendor/login')) {
         window.location.href = window.location.pathname.startsWith('/vendor') ? '/vendor/login' : '/login';
       }
@@ -27,9 +28,4 @@ api.interceptors.response.use(
   },
 );
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  error: { code: string; message: string } | null;
-  meta?: { page?: number; limit?: number; total?: number };
-}
+export type { ApiResponse } from '../types';

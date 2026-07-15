@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { fetchWallet } from '../api/client';
+import { walletApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function WalletPage() {
   const { isAuthenticated } = useAuth();
   const [wallet, setWallet] = useState<{ balance: number; transactions: Array<{ id: string; amount: number; type: string }> } | null>(null);
-  useEffect(() => { if (isAuthenticated) fetchWallet().then(setWallet).catch(() => {}); }, [isAuthenticated]);
+  useEffect(() => { if (isAuthenticated) walletApi.fetchWallet().then(setWallet).catch(() => {}); }, [isAuthenticated]);
   if (!isAuthenticated) return null;
   return (
     <div className="page-container">

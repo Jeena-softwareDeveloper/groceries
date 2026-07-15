@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { formatPrice, listOrders, type Order } from '../api/client';
+import { formatPrice, orderApi, type Order } from '../api';
 
 const statusColors: Record<string, string> = {
   PLACED: 'bg-blue-100 text-blue-700',
@@ -25,7 +25,7 @@ export default function OrdersPage() {
       window.history.replaceState({}, '');
     }
 
-    listOrders()
+    orderApi.listOrders()
       .then((r) => setOrders(r.orders))
       .catch(() => setError('Failed to load orders'))
       .finally(() => setLoading(false));

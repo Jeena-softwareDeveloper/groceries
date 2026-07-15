@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api, type ApiResponse } from '../api/client';
+import { vendorDashboardApi, categoryApi } from '../api';
 
 export default function VendorLayout() {
   const { user, logout } = useAuth();
@@ -31,7 +31,7 @@ export default function VendorLayout() {
 
 export function VendorDashboard() {
   const [stats, setStats] = useState<Record<string, unknown> | null>(null);
-  useEffect(() => { api.get<ApiResponse<Record<string, unknown>>>('/vendor/dashboard').then((r) => setStats(r.data.data)); }, []);
+  useEffect(() => { vendorDashboardApi.getStats().then((r) => setStats(r.data)); }, []);
   return <div><h1>Vendor Dashboard</h1><pre>{JSON.stringify(stats, null, 2)}</pre></div>;
 }
 
@@ -42,12 +42,12 @@ export function VendorProducts() {
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
-  const load = () => api.get<ApiResponse<{ items: typeof products }>>('/vendor/products').then((r) => setProducts(r.data.data.items ?? r.data.data as unknown as typeof products));
-  useEffect(() => { load(); api.get<ApiResponse<typeof categories>>('/vendor/categories').then((r) => setCategories(r.data.data)); }, []);
+  const load = () => vendorDashboardApi.products.getAll().then((r) => setProducts(r.data.items ?? r.data as unknown as typeof products));
+  useEffect(() => { load(); categoryApi.getVendorCategories().then((r) => setCategories(r.data)); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/vendor/products', { name, slug, categoryId, mrp: 100, sellingPrice: 90, unit: '1pc', stock: 50 });
+    await vendorDashboardApi.products.create({ name, slug, categoryId, mrp: 100, sellingPrice: 90, unit: '1pc', stock: 50 });
     setName(''); setSlug('');
     load();
   };
@@ -70,7 +70,7 @@ export function VendorProducts() {
           {products.map((p) => (
             <tr key={p.id}>
               <td>{p.name}</td><td>₹{p.sellingPrice}</td><td>{p.status}</td>
-              <td>{p.status !== 'PUBLISHED' && <button type="button" onClick={() => api.post(`/vendor/products/${p.id}/publish`).then(load)}>Publish</button>}</td>
+              <td>{p.status !== 'PUBLISHED' && <button type="button" onClick={() => vendorDashboardApi.products.publish(p.id).then(load)}>Publish</button>}</td>
             </tr>
           ))}
         </tbody>
@@ -81,10 +81,10 @@ export function VendorProducts() {
 
 export function VendorInventory() {
   const [products, setProducts] = useState<Array<{ id: string; name: string; inventory?: { stock: number } }>>([]);
-  const load = () => api.get<ApiResponse<{ items: typeof products }>>('/vendor/products').then((r) => setProducts(r.data.data.items ?? r.data.data as unknown as typeof products));
+  const load = () => vendorDashboardApi.products.getAll().then((r) => setProducts(r.data.items ?? r.data as unknown as typeof products));
   useEffect(() => { load(); }, []);
   const updateStock = async (productId: string, stock: number) => {
-    await api.put(`/vendor/inventory/${productId}`, { stock });
+    await vendorDashboardApi.inventory.update(productId, { stock });
     load();
   };
   return (
@@ -111,7 +111,7 @@ export function VendorInventory() {
 
 export function VendorOrders() {
   const [orders, setOrders] = useState<Array<{ id: string; orderNumber: string; status: string; grandTotal: number }>>([]);
-  const load = () => api.get<ApiResponse<{ items: typeof orders }>>('/vendor/orders').then((r) => setOrders(r.data.data.items ?? r.data.data as unknown as typeof orders));
+  const load = () => vendorDashboardApi.orders.getAll().then((r) => setOrders(r.data.items ?? r.data as unknown as typeof orders));
   useEffect(() => { load(); const t = setInterval(load, 10000); return () => clearInterval(t); }, []);
   return (
     <div>
@@ -123,10 +123,10 @@ export function VendorOrders() {
             <tr key={o.id}>
               <td>{o.orderNumber}</td><td>{o.status}</td><td>₹{o.grandTotal}</td>
               <td className="actions">
-                {o.status === 'PLACED' && <button type="button" onClick={() => api.patch(`/vendor/orders/${o.id}`, { status: 'CONFIRMED' }).then(load)}>Confirm</button>}
-                {o.status === 'CONFIRMED' && <button type="button" onClick={() => api.patch(`/vendor/orders/${o.id}`, { status: 'PACKED' }).then(load)}>Packed</button>}
-                {o.status === 'PACKED' && <button type="button" onClick={() => api.patch(`/vendor/orders/${o.id}`, { status: 'OUT_FOR_DELIVERY' }).then(load)}>Dispatch</button>}
-                {o.status === 'OUT_FOR_DELIVERY' && <button type="button" onClick={() => api.patch(`/vendor/orders/${o.id}`, { status: 'DELIVERED' }).then(load)}>Delivered</button>}
+                {o.status === 'PLACED' && <button type="button" onClick={() => vendorDashboardApi.orders.updateStatus(o.id, 'CONFIRMED').then(load)}>Confirm</button>}
+                {o.status === 'CONFIRMED' && <button type="button" onClick={() => vendorDashboardApi.orders.updateStatus(o.id, 'PACKED').then(load)}>Packed</button>}
+                {o.status === 'PACKED' && <button type="button" onClick={() => vendorDashboardApi.orders.updateStatus(o.id, 'OUT_FOR_DELIVERY').then(load)}>Dispatch</button>}
+                {o.status === 'OUT_FOR_DELIVERY' && <button type="button" onClick={() => vendorDashboardApi.orders.updateStatus(o.id, 'DELIVERED').then(load)}>Delivered</button>}
               </td>
             </tr>
           ))}

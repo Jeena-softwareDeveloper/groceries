@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { addToCart, getHomeFeed, type HomeFeed } from '../api/client';
+import { customerApi, cartApi, type HomeFeed } from '../api';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import ShopCard from '../components/ShopCard';
@@ -13,7 +13,7 @@ export default function HomePage() {
   const [addMsg, setAddMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    getHomeFeed()
+    customerApi.getHomeFeed()
       .then(setFeed)
       .catch(() => setError('Failed to load home feed'))
       .finally(() => setLoading(false));
@@ -25,7 +25,7 @@ export default function HomePage() {
       return;
     }
     try {
-      await addToCart(productId);
+      await cartApi.addToCart(productId);
       setAddMsg('Added to cart!');
       setTimeout(() => setAddMsg(null), 2000);
     } catch {

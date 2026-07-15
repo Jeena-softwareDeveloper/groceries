@@ -169,16 +169,16 @@ export async function search(q: string, districtIdInput?: string, scope?: string
   const productWhere = {
     status: 'PUBLISHED' as const,
     OR: [
-      { name: { contains: query, mode: 'insensitive' as const } },
-      { brand: { contains: query, mode: 'insensitive' as const } },
+      { name: { contains: query } },
+      { brand: { contains: query } },
     ],
     ...(districtId ? { vendor: { districtId } } : {}),
   };
 
   const [products, shops, categories] = await Promise.all([
     scope === 'shops' ? [] : prisma.product.findMany({ where: productWhere, take: 20, include: { images: { take: 1 }, vendor: { select: { shopName: true } } } }),
-    scope === 'products' ? [] : prisma.vendor.findMany({ where: { shopName: { contains: query, mode: 'insensitive' }, status: 'APPROVED', ...(districtId ? { districtId } : {}) }, take: 10 }),
-    scope === 'products' || scope === 'shops' ? [] : prisma.category.findMany({ where: { name: { contains: query, mode: 'insensitive' } }, take: 5 }),
+    scope === 'products' ? [] : prisma.vendor.findMany({ where: { shopName: { contains: query }, status: 'APPROVED', ...(districtId ? { districtId } : {}) }, take: 10 }),
+    scope === 'products' || scope === 'shops' ? [] : prisma.category.findMany({ where: { name: { contains: query } }, take: 5 }),
   ]);
   return { products, shops, categories };
 }

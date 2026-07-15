@@ -13,19 +13,7 @@ import VendorLayout, { VendorDashboard, VendorProducts, VendorOrders, VendorInve
 import AnalyticsPage from './pages/AnalyticsPage';
 import { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
 
-function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  if (loading) return <p className="loading">Loading…</p>;
-  if (!user || user.role !== 'SUPER_ADMIN') return <Navigate to="/login" replace />;
-  return <>{children}</>;
-}
-
-function VendorRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  if (loading) return <p className="loading">Loading…</p>;
-  if (!user || user.role !== 'VENDOR') return <Navigate to="/vendor/login" replace />;
-  return <>{children}</>;
-}
+import { AdminRoute, VendorRoute } from './guards';
 
 export default function App() {
   return (

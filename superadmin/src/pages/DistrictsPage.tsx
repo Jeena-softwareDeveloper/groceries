@@ -1,152 +1,202 @@
-import { useEffect, useState } from 'react';
-import { api, type ApiResponse } from '../api/client';
-import { Filter, Plus, ChevronsUpDown, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-
-interface District {
-  id: string;
-  name: string;
-  code: string;
-  isActive: boolean;
-  _count?: { areas: number };
-}
+import { useState } from 'react';
+import { Globe, Plus, X, Eye, Edit, Trash2 } from 'lucide-react';
+import { districtApi } from '../api';
+import { useApiData } from '../hooks';
+import { PageHeader, SearchBar, DataTable, Pagination, StatusBadge, EmptyState, ColumnDef } from '../components/ui';
+import type { District } from '../types';
 
 export default function DistrictsPage() {
-  const [districts, setDistricts] = useState<District[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Hidden form state
+  const { data: districts = [], loading, refetch } = useApiData(() => districtApi.getAll());
+  
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
-
-  const load = () => {
-    api
-      .get<ApiResponse<District[]>>('/admin/districts')
-      .then((res) => setDistricts(res.data.data))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    load();
-  }, []);
+  const [search, setSearch] = useState('');
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/admin/districts', { name, code, isActive: true });
+    await districtApi.create({ name, code, isActive: true });
     setName('');
     setCode('');
     setShowForm(false);
-    load();
+    refetch();
   };
 
-  return (
-    <div className="text-slate-900">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="m-0 text-2xl text-slate-900 font-bold">Districts</h1>
+  const filteredDistricts = districts.filter(d => 
+    d.name.toLowerCase().includes(search.toLowerCase()) || 
+    d.code.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const columns: ColumnDef<District>[] = [
+    {
+      key: 'id',
+      header: '#',
+      headerClassName: 'pl-6',
+      cellClassName: 'pl-6 font-semibold text-slate-400',
+      cell: (_, index) => String(index + 1).padStart(2, '0')
+    },
+    {
+      key: 'name',
+      header: 'District Name',
+      cell: (d) => (
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-white border border-green-600 text-green-600 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-50">
-            <Filter size={16} /> Filters
+          <div className="w-8 h-8 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
+            <Globe size={14} className="text-indigo-500" strokeWidth={2.5} />
+          </div>
+          <span className="font-bold text-slate-900">{d.name}</span>
+        </div>
+      )
+    },
+    {
+      key: 'code',
+      header: 'Code',
+      cell: (d) => (
+        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-xs font-bold uppercase font-mono tracking-widest">
+          {d.code}
+        </span>
+      )
+    },
+    {
+      key: 'areas',
+      header: 'Total Areas',
+      cell: (d) => (
+        <span className="inline-flex items-center justify-center w-8 h-7 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-xs font-bold">
+          {d._count?.areas ?? 0}
+        </span>
+      )
+    },
+    {
+      key: 'vendors',
+      header: 'Total Vendors',
+      cellClassName: 'font-bold text-slate-700',
+      cell: (d) => d.code === 'BLR' ? 98 : d.code === 'CHN' ? 58 : Math.floor(Math.random() * 100) // Original mock logic
+    },
+    {
+      key: 'customers',
+      header: 'Total Customers',
+      cellClassName: 'font-bold text-slate-700',
+      cell: (d) => d.code === 'BLR' ? '12,458' : d.code === 'CHN' ? '12,110' : '4,230' // Original mock logic
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      cell: (d) => (
+        <StatusBadge 
+          status={d.isActive ? 'Active' : 'Inactive'} 
+          colorMap={{
+            Active: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+            Inactive: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' }
+          }} 
+        />
+      )
+    },
+    {
+      key: 'created',
+      header: 'Created On',
+      cellClassName: 'font-medium text-slate-500',
+      cell: (d) => d.code === 'BLR' ? '10 Jul 2025' : '11 Jul 2025' // Original mock logic
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      headerClassName: 'pr-6',
+      cellClassName: 'pr-6',
+      cell: () => (
+        <div className="flex items-center gap-2">
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-400 cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors">
+            <Eye size={14} strokeWidth={2.5} />
           </button>
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
-            <Plus size={16} /> Add District
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-slate-400 cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors">
+            <Edit size={14} strokeWidth={2.5} />
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-lg text-red-400 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors">
+            <Trash2 size={14} strokeWidth={2.5} />
           </button>
         </div>
-      </div>
+      )
+    }
+  ];
+
+  return (
+    <div className="flex flex-col gap-6 w-full max-w-[1600px] mx-auto pb-12 text-slate-900">
+      <PageHeader 
+        title="Districts" 
+        description="Manage delivery districts, their coverage areas and vendor distribution." 
+        action={
+          <button
+            className="flex items-center gap-2 bg-slate-900 border border-transparent text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm hover:bg-slate-800 transition-all"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? <X size={16} strokeWidth={2.5} /> : <Plus size={16} strokeWidth={2.5} />}
+            {showForm ? 'Cancel' : 'Add District'}
+          </button>
+        }
+      />
 
       {showForm && (
-        <form className="flex items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={handleCreate}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="District name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Code (e.g. CHN)" value={code} onChange={(e) => setCode(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save District</button>
+        <form
+          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-2xl border border-slate-200/75 shadow-sm"
+          onSubmit={handleCreate}
+        >
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">District Name</label>
+            <input
+              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-56"
+              placeholder="e.g. Bangalore"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Code</label>
+            <input
+              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36 uppercase"
+              placeholder="e.g. BLR"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+          >
+            Save District
+          </button>
         </form>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        {loading ? (
-          <p className="p-6 m-0 text-slate-500">Loading…</p>
-        ) : (
-          <>
-            <div className="overflow-x-auto w-full">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">#</th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">District Name <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Code <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Total Areas <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Total Vendors <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Total Customers <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Status <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">Created On <ChevronsUpDown size={14} className="text-slate-400" /></div>
-                    </th>
-                    <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {districts.map((d, index) => {
-                    const mockVendors = d.code === 'BLR' ? 98 : d.code === 'CHN' ? 58 : Math.floor(Math.random() * 100);
-                    const mockCustomers = d.code === 'BLR' ? '12,458' : d.code === 'CHN' ? '12,110' : '4,230';
-                    const mockDate = d.code === 'BLR' ? '10 Jul 2025' : '11 Jul 2025';
+      <SearchBar 
+        value={search} 
+        onChange={setSearch} 
+        placeholder="Search districts..." 
+        totalCount={districts.length} 
+        totalLabel="total districts"
+      />
 
-                    return (
-                      <tr key={d.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                        <td className="p-4 text-sm font-medium text-slate-900">{index + 1}</td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{d.name}</td>
-                        <td className="p-4 text-sm align-middle">
-                          <span className="bg-green-100 text-green-800 border border-green-200 px-2 py-1 rounded text-xs font-semibold uppercase">{d.code}</span>
-                        </td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{d._count?.areas ?? 0}</td>
-                        <td className="p-4 text-sm font-semibold text-green-600">{mockVendors}</td>
-                        <td className="p-4 text-sm font-semibold text-green-600">{mockCustomers}</td>
-                        <td className="p-4 text-sm align-middle">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${d.isActive ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
-                            {d.isActive ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td className="p-4 text-sm font-medium text-slate-900">{mockDate}</td>
-                        <td className="p-4 text-sm align-middle">
-                          <div className="flex items-center gap-2">
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Eye size={14} /></button>
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                            <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="flex items-center justify-between p-4 px-6 border-t border-slate-200 bg-white">
-              <span className="text-sm text-slate-500">Showing 1 to {districts.length} of {districts.length} results</span>
-              <div className="flex items-center gap-2">
-                <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 transition-colors"><ChevronLeft size={16} /></button>
-                <button className="w-8 h-8 flex items-center justify-center bg-green-600 border border-green-600 rounded-md text-white font-medium cursor-pointer">1</button>
-                <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 transition-colors"><ChevronRight size={16} /></button>
-                <select className="ml-4 px-3 py-1.5 border border-slate-200 rounded-md bg-white text-sm text-slate-600 outline-none cursor-pointer">
-                  <option>10 / page</option>
-                  <option>20 / page</option>
-                  <option>50 / page</option>
-                </select>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      <DataTable 
+        columns={columns}
+        data={filteredDistricts}
+        loading={loading}
+        emptyState={
+          <EmptyState 
+            icon={Globe} 
+            title="No districts yet" 
+            description={search ? "No districts match your search." : "Add your first district to enable area management."}
+          />
+        }
+        pagination={
+          filteredDistricts.length > 0 && (
+            <Pagination 
+              total={filteredDistricts.length}
+              page={1}
+              limit={10}
+              entityName="districts"
+            />
+          )
+        }
+      />
     </div>
   );
 }

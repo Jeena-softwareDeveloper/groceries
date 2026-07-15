@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  cartApi,
   formatPrice,
-  getCart,
-  removeFromCart,
-  updateCartItem,
   type Cart,
-} from '../api/client';
+} from '../api';
 
 export default function CartPage() {
   const [cart, setCart] = useState<Cart | null>(null);
@@ -15,7 +13,7 @@ export default function CartPage() {
   const [updating, setUpdating] = useState<string | null>(null);
 
   const loadCart = () => {
-    getCart()
+    cartApi.getCart()
       .then(setCart)
       .catch(() => setError('Failed to load cart'))
       .finally(() => setLoading(false));
@@ -28,7 +26,7 @@ export default function CartPage() {
   const handleQuantityChange = async (productId: string, quantity: number) => {
     setUpdating(productId);
     try {
-      await updateCartItem(productId, quantity);
+      await cartApi.updateCartItem(productId, quantity);
       loadCart();
     } catch {
       setError('Failed to update quantity');
@@ -40,7 +38,7 @@ export default function CartPage() {
   const handleRemove = async (productId: string) => {
     setUpdating(productId);
     try {
-      await removeFromCart(productId);
+      await cartApi.removeFromCart(productId);
       loadCart();
     } catch {
       setError('Failed to remove item');

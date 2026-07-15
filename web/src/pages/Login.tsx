@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestOtp, verifyOtp } from '../api/client';
+import { authApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
@@ -18,7 +18,7 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const result = await requestOtp(phone);
+      const result = await authApi.requestOtp(phone);
       if (result.otp) setDevOtp(result.otp);
       setStep('otp');
     } catch (err: unknown) {
@@ -36,7 +36,7 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const tokens = await verifyOtp(phone, otp);
+      const tokens = await authApi.verifyOtp(phone, otp);
       localStorage.setItem('accessToken', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
       await refreshUser();

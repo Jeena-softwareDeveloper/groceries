@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProfile, updateProfile, type Address } from '../api/client';
+import { customerApi, type Address } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProfilePage() {
@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getProfile()
+    customerApi.getProfile()
       .then((profile) => {
         setName(profile.name ?? '');
         setEmail(profile.email ?? '');
@@ -31,7 +31,7 @@ export default function ProfilePage() {
     setError(null);
     setMessage(null);
     try {
-      const updated = await updateProfile({ name: name || undefined, email: email || undefined });
+      const updated = await customerApi.updateProfile({ name: name || undefined, email: email || undefined });
       setUser(updated);
       setMessage('Profile updated successfully');
     } catch {

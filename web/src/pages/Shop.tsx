@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import {
-  addToCart,
-  getShop,
-  getShopProducts,
-  listShops,
+  cartApi,
+  shopApi,
   type ProductSummary,
   type Shop,
   type ShopSummary,
-} from '../api/client';
+} from '../api';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import ShopCard from '../components/ShopCard';
@@ -30,7 +28,7 @@ export default function ShopPage() {
     setError(null);
 
     if (id) {
-      Promise.all([getShop(id), getShopProducts(id, categoryId)])
+      Promise.all([shopApi.getShop(id), shopApi.getShopProducts(id, categoryId)])
         .then(([shopData, productData]) => {
           setShop(shopData);
           setProducts(productData);
@@ -38,7 +36,7 @@ export default function ShopPage() {
         .catch(() => setError('Shop not found'))
         .finally(() => setLoading(false));
     } else {
-      listShops(undefined, undefined, categoryId)
+      shopApi.listShops(undefined, undefined, categoryId)
         .then(setShops)
         .catch(() => setError('Failed to load shops'))
         .finally(() => setLoading(false));
@@ -50,7 +48,7 @@ export default function ShopPage() {
       window.location.href = '/login';
       return;
     }
-    await addToCart(productId);
+    await cartApi.addToCart(productId);
   };
 
   if (loading) {
