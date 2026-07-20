@@ -2,7 +2,7 @@ import axios from 'axios';
 import { sessionManager } from '../utils/session';
 import type { ApiResponse } from '@shared/types';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.jeenora.com';
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const api = axios.create({
   baseURL: API_URL,
