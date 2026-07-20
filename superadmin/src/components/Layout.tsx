@@ -33,6 +33,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [pendingCount, setPendingCount] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
     vendorRequestApi.getPendingCount()
@@ -49,15 +50,18 @@ export default function Layout() {
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-900">
       {/* Sidebar */}
-      <aside className="w-[260px] bg-[#0d3d25] text-white flex flex-col shrink-0">
-        <div className="p-6 flex items-center gap-3 shrink-0">
-          <div className="flex items-center justify-center relative w-11 h-11">
+      <aside className={`bg-[#0d3d25] text-white flex flex-col shrink-0 transition-[width] duration-300 ease-in-out ${isSidebarOpen ? 'w-[240px]' : 'w-[72px]'}`}>
+        <div className="flex flex-col h-full overflow-hidden w-full">
+          <div className={`flex items-center shrink-0 ${isSidebarOpen ? 'p-4 gap-2' : 'py-6 px-4 justify-center'}`}>
+          <div className="flex items-center justify-center relative w-16 h-16 shrink-0">
             <img src="/logo.png" alt="All Time Market" className="w-full h-full object-contain" />
           </div>
-          <div className="flex flex-col">
-            <h2 className="m-0 text-[17px] font-bold tracking-wide">All Time Market</h2>
-            <span className="text-[9px] text-green-100 font-medium tracking-wide">Fresh Groceries, Fast Delivery</span>
-          </div>
+          {isSidebarOpen && (
+            <div className="flex flex-col">
+              <h2 className="m-0 text-[17px] font-bold tracking-wide whitespace-nowrap">All Time Market</h2>
+              <span className="text-[9px] text-green-100 font-medium tracking-wide whitespace-nowrap">Fresh Groceries, Fast Delivery</span>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto flex flex-col" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -70,50 +74,65 @@ export default function Layout() {
                 <Link 
                   key={item.path} 
                   to={item.path} 
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors no-underline ${isActive ? 'bg-green-600 text-white' : 'text-slate-200 hover:bg-white/10'}`}
+                  className={`relative flex items-center ${isSidebarOpen ? 'gap-3 px-4' : 'justify-center px-0'} py-3 rounded-lg text-sm font-medium transition-colors no-underline ${isActive ? 'bg-green-600 text-white' : 'text-slate-200 hover:bg-white/10'}`}
+                  title={!isSidebarOpen ? item.label : undefined}
                 >
-                  <Icon size={18} />
-                  <span style={{ flex: 1 }}>{item.label}</span>
-                  {showBadge && (
+                  <Icon size={isSidebarOpen ? 18 : 22} className="shrink-0" />
+                  {isSidebarOpen && <span style={{ flex: 1 }} className="whitespace-nowrap">{item.label}</span>}
+                  {showBadge && isSidebarOpen && (
                     <span style={{ background: '#dc2626', color: '#fff', borderRadius: 999, padding: '1px 7px', fontSize: 11, fontWeight: 700, minWidth: 20, textAlign: 'center' }}>
                       {pendingCount}
                     </span>
+                  )}
+                  {showBadge && !isSidebarOpen && (
+                    <span style={{ background: '#dc2626', borderRadius: 999, width: 8, height: 8, position: 'absolute', right: '50%', marginRight: '-12px', top: '10px' }} />
                   )}
                 </Link>
               );
             })}
           </nav>
 
-          <div className="m-6 shrink-0 bg-gradient-to-b from-[#104a2d] to-[#0d3d25] border border-white/10 rounded-xl p-5 text-left relative overflow-hidden">
-            <Store size={40} className="absolute -top-2 left-0 right-0 opacity-10 pointer-events-none" />
-            <h4 className="m-0 mb-2 text-sm font-bold relative z-10">Grow your marketplace</h4>
-            <p className="m-0 mb-4 text-xs text-slate-300 leading-snug relative z-10">Add more vendors and increase your reach.</p>
-            <button type="button" className="w-full bg-green-600 text-white border-none py-2 rounded-md text-xs font-semibold cursor-pointer relative z-10 hover:bg-green-700 transition-colors">
-              View Analytics
-            </button>
-          </div>
+          {isSidebarOpen && (
+            <div className="m-6 shrink-0 bg-gradient-to-b from-[#104a2d] to-[#0d3d25] border border-white/10 rounded-xl p-5 text-left relative overflow-hidden">
+              <Store size={40} className="absolute -top-2 left-0 right-0 opacity-10 pointer-events-none" />
+              <h4 className="m-0 mb-2 text-sm font-bold relative z-10 whitespace-nowrap">Grow your marketplace</h4>
+              <p className="m-0 mb-4 text-xs text-slate-300 leading-snug relative z-10">Add more vendors and increase your reach.</p>
+              <button type="button" className="w-full bg-green-600 text-white border-none py-2 rounded-md text-xs font-semibold cursor-pointer relative z-10 hover:bg-green-700 transition-colors">
+                View Analytics
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="mx-4 mb-6 pt-4 shrink-0 border-t border-white/10 flex items-center justify-between">
+        <div className={`mx-4 mb-6 pt-4 shrink-0 border-t border-white/10 flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center flex-col gap-4'}`}>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-green-200 text-green-800 rounded-full flex items-center justify-center font-bold text-sm">SA</div>
-            <div className="flex flex-col">
-              <strong className="text-sm font-semibold">Super Admin</strong>
-              <span className="text-[10px] text-slate-300">{user?.email || 'admin@districtmart.com'}</span>
+            <div className="w-9 h-9 shrink-0 bg-green-200 text-green-800 rounded-full flex items-center justify-center font-bold text-sm">
+              {user?.name ? user.name.substring(0, 2).toUpperCase() : 'SA'}
             </div>
+            {isSidebarOpen && (
+              <div className="flex flex-col">
+                <strong className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
+                  {user?.name || 'Super Admin'}
+                </strong>
+                <span className="text-[10px] text-slate-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
+                  {user?.email || 'admin@districtmart.com'}
+                </span>
+              </div>
+            )}
           </div>
           <button type="button" onClick={handleLogout} className="bg-transparent border-none text-slate-300 cursor-pointer p-1 rounded-md flex items-center hover:bg-white/10 hover:text-white transition-colors" title="Logout">
-            <LogOut size={18} />
+            <LogOut size={isSidebarOpen ? 18 : 22} />
           </button>
+        </div>
         </div>
       </aside>
 
       {/* Main Area */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="h-[72px] bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
+        <header className="h-[72px] bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 transition-all duration-300">
           <div className="flex items-center gap-4">
-            <button className="bg-transparent border-none text-slate-600 cursor-pointer p-1 hidden md:block">
+            <button type="button" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="bg-transparent border-none text-slate-600 cursor-pointer p-1 hidden md:block hover:bg-slate-100 rounded-md transition-colors">
               <Menu size={24} />
             </button>
           </div>
@@ -136,10 +155,12 @@ export default function Layout() {
             </button>
             
             <div className="flex items-center gap-3 cursor-pointer p-1 px-2 rounded-lg hover:bg-slate-100 transition-colors">
-              <div className="w-8 h-8 bg-green-200 text-green-800 rounded-full flex items-center justify-center font-bold text-sm">SA</div>
+              <div className="w-8 h-8 bg-green-200 text-green-800 rounded-full flex items-center justify-center font-bold text-sm">
+                {user?.name ? user.name.substring(0, 2).toUpperCase() : 'SA'}
+              </div>
               <div className="flex flex-col">
-                <strong className="text-sm text-slate-900">Super Admin</strong>
-                <span className="text-xs text-slate-500">Super Admin</span>
+                <strong className="text-sm text-slate-900">{user?.name || 'Super Admin'}</strong>
+                <span className="text-xs text-slate-500 capitalize">{user?.role?.replace('_', ' ').toLowerCase() || 'Super Admin'}</span>
               </div>
               <ChevronDown size={16} className="text-slate-500" />
             </div>
