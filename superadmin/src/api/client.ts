@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { STORAGE_KEYS } from '../constants';
 
-const rawUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:4000';
+const rawUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.jeenora.com';
 const API_BASE_URL = rawUrl.replace(/\/api\/v1\/?$/, '');
 
 export const api = axios.create({
