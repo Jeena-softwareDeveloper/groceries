@@ -54,3 +54,50 @@ export interface PaginationParams {
   limit?: number;
   cursor?: string;
 }
+
+export interface AdminDashboardData {
+  kpi: {
+    totalVendors: number;
+    vendorsDelta: string;
+    totalCustomers: number;
+    customersDelta: string;
+    totalOrders: number;
+    ordersDelta: string;
+    totalRevenue: number;
+    revenueDelta: string;
+  };
+  salesOverview: {
+    total: number;
+    thisWeek: number;
+    today: number;
+    orders: number;
+    avgOrder: number;
+    percentage: string;
+    chart: number[];
+  };
+  recentOrders: {
+    id: string;
+    name: string;
+    amount: string;
+    status: string;
+    statusStyle: string;
+    time: string;
+    initials: string;
+  }[];
+  topCategories: {
+    name: string;
+    orders: string;
+    pct: string;
+    icon: string;
+    color: string;
+    bg: string;
+  }[];
+  topVendors: {
+    name: string;
+    orders: string;
+    rev: string;
+    rating: string;
+    color: string;
+    bg: string;
+  }[];
+}

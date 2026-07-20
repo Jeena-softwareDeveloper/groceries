@@ -8,4 +8,6 @@ export * from './category.api';
 export * from './vendor.api';
 export * from './settings.api';
 export * from './admin-extras.api';
+export * from './vendor-request.api';
+export * from './dashboard.api';
 export * from './vendor-dashboard.api';

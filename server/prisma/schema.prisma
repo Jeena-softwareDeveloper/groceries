@@ -405,7 +405,9 @@ model Banner {
   title      String
   imageUrl   String
   linkUrl    String?
-  sortOrder  Int       @default(0)
+  themeColor    String?
+  themeColorEnd String?   // gradient end color (optional - if set, header shows gradient)
+  sortOrder     Int       @default(0)
   isActive   Boolean   @default(true)
   startsAt   DateTime?
   endsAt     DateTime?
@@ -506,6 +508,11 @@ model DeliveryChargeRule {
   charge             Decimal  
   freeAbove          Decimal? 
   isActive           Boolean  @default(true)
+  bannerTitle        String?
+  bannerSubtitle     String?
+  bannerIcon         String?
+  bannerBgColor      String?
+  bannerTextColor    String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

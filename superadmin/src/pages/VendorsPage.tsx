@@ -152,13 +152,7 @@ export default function VendorsPage() {
           </button>
         ))}
 
-        <div className="ml-auto">
-          <SearchBar 
-            value={search} 
-            onChange={setSearch} 
-            placeholder="Search vendors..." 
-          />
-        </div>
+
       </div>
 
       <DataTable 

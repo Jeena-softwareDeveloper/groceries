@@ -65,7 +65,7 @@ export default function HomePage() {
             {feed.banners.map((banner) => (
               <div
                 key={banner.id}
-                className="relative h-40 w-72 flex-shrink-0 overflow-hidden rounded-xl sm:h-48 sm:w-96"
+                className="relative h-32 w-64 flex-shrink-0 overflow-hidden rounded-xl sm:h-40 sm:w-80"
               >
                 <img src={banner.imageUrl} alt={banner.title} className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />

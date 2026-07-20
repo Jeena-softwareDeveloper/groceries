@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authApi, type CustomerProfile } from '../api';
+import { sessionManager } from '../utils/session';
 
 interface AuthContextType {
   user: CustomerProfile | null;
@@ -17,7 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshUser = async () => {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionManager.getAccessToken();
     if (!token) {
       setUser(null);
       return;
@@ -27,20 +28,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionManager.getAccessToken();
     if (!token) {
       setLoading(false);
       return;
     }
     authApi.getMe()
       .then(setUser)
-      .catch(() => localStorage.clear())
+      .catch(() => sessionManager.clearSession())
       .finally(() => setLoading(false));
   }, []);
 
   const logout = () => {
-    authApi.logout(localStorage.getItem('refreshToken') ?? '').catch(() => {});
-    localStorage.clear();
+    authApi.logout(sessionManager.getRefreshToken() ?? '').catch(() => {});
+    sessionManager.clearSession();
     setUser(null);
   };
 

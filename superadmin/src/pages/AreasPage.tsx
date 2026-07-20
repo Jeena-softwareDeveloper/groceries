@@ -175,13 +175,7 @@ export default function AreasPage() {
         </form>
       )}
 
-      <SearchBar 
-        value={search} 
-        onChange={setSearch} 
-        placeholder="Search areas..." 
-        totalCount={areas.length} 
-        totalLabel="total areas"
-      />
+
 
       <DataTable 
         columns={columns}

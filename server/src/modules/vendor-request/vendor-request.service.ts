@@ -35,7 +35,7 @@ export async function upsertDraft(customerId: string, data: Record<string, unkno
     where: { customerId, status: { in: ['PENDING', 'APPROVED'] } },
   });
   if (blocking) {
-    throw new AppError(`Your application is already ${blocking.status.toLowerCase()}. You cannot submit a new one.`, 409);
+    throw new AppError('CONFLICT', `Your application is already ${blocking.status.toLowerCase()}. You cannot submit a new one.`, 409);
   }
   return prisma.vendorRequest.create({ data: { customerId, ...cleanData } });
 }
@@ -48,7 +48,7 @@ export async function submitApplication(customerId: string) {
   // Basic validation — required fields
   const required = ['shopName', 'ownerName', 'mobileNumber', 'districtId', 'areaId', 'address'];
   const missing = required.filter((k) => !request[k as keyof typeof request]);
-  if (missing.length) throw new AppError(`Missing required fields: ${missing.join(', ')}`, 422);
+  if (missing.length) throw new AppError('VALIDATION_ERROR', `Missing required fields: ${missing.join(', ')}`, 422);
 
   return prisma.vendorRequest.update({
     where: { id: request.id },
@@ -93,7 +93,7 @@ export async function getRequest(id: string) {
 
 export async function approveRequest(id: string, adminId: string) {
   const req = await getRequest(id);
-  if (req.status !== 'PENDING') throw new AppError('Only PENDING requests can be approved', 400);
+  if (req.status !== 'PENDING') throw new AppError('BAD_REQUEST', 'Only PENDING requests can be approved', 400);
 
   // Generate a temporary password for the vendor
   const tempPassword = Math.random().toString(36).slice(-8) + 'V@1';
@@ -109,7 +109,7 @@ export async function approveRequest(id: string, adminId: string) {
 
   // Find area with district
   const area = await prisma.area.findUnique({ where: { id: req.areaId ?? '' }, include: { district: true } });
-  if (!area) throw new AppError('Area not found for this request', 400);
+  if (!area) throw new AppError('BAD_REQUEST', 'Area not found for this request', 400);
 
   // Create the Vendor account
   const vendor = await prisma.vendor.create({
@@ -163,7 +163,7 @@ export async function approveRequest(id: string, adminId: string) {
 export async function rejectRequest(id: string, adminId: string, reason: string) {
   const req = await getRequest(id);
   if (!['PENDING', 'MORE_INFO_REQUIRED'].includes(req.status)) {
-    throw new AppError('Only PENDING or MORE_INFO_REQUIRED requests can be rejected', 400);
+    throw new AppError('BAD_REQUEST', 'Only PENDING or MORE_INFO_REQUIRED requests can be rejected', 400);
   }
   const updated = await prisma.vendorRequest.update({
     where: { id },
@@ -183,7 +183,7 @@ export async function rejectRequest(id: string, adminId: string, reason: string)
 
 export async function requestMoreInfo(id: string, adminId: string, remarks: string) {
   const req = await getRequest(id);
-  if (req.status !== 'PENDING') throw new AppError('Only PENDING requests can be flagged for more info', 400);
+  if (req.status !== 'PENDING') throw new AppError('BAD_REQUEST', 'Only PENDING requests can be flagged for more info', 400);
   const updated = await prisma.vendorRequest.update({
     where: { id },
     data: { status: 'MORE_INFO_REQUIRED', adminRemarks: remarks, reviewedBy: adminId, reviewedAt: new Date() },

@@ -16,7 +16,18 @@ router.get('/banners', async (_req, res, next) => {
 });
 router.post('/banners', async (req, res, next) => {
   try {
-    const data = z.object({ title: z.string(), imageUrl: z.string(), districtId: z.string().optional(), linkUrl: z.string().optional(), sortOrder: z.number().optional(), isActive: z.boolean().optional(), startsAt: z.string().datetime().optional(), endsAt: z.string().datetime().optional() }).parse(req.body);
+    const data = z.object({
+      title: z.string(),
+      imageUrl: z.string(),
+      districtId: z.string().optional(),
+      linkUrl: z.string().optional(),
+      themeColor: z.string().optional(),
+      themeColorEnd: z.string().optional(),
+      sortOrder: z.number().optional(),
+      isActive: z.boolean().optional(),
+      startsAt: z.string().datetime().optional(),
+      endsAt: z.string().datetime().optional()
+    }).parse(req.body);
     sendSuccess(res, await prisma.banner.create({ data: { ...data, startsAt: data.startsAt ? new Date(data.startsAt) : undefined, endsAt: data.endsAt ? new Date(data.endsAt) : undefined } }), 201);
   } catch (e) { next(e); }
 });

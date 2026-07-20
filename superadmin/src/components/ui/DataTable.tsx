@@ -1,5 +1,5 @@
-import React from 'react';
-import { ChevronsUpDown } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronsUpDown, ChevronRight, ChevronDown } from 'lucide-react';
 import { LoadingSkeleton } from './LoadingSkeleton';
 
 export interface ColumnDef<T> {
@@ -16,9 +16,19 @@ interface DataTableProps<T> {
   loading?: boolean;
   emptyState?: React.ReactNode;
   pagination?: React.ReactNode;
+  renderExpandedRow?: (item: T) => React.ReactNode;
 }
 
-export function DataTable<T>({ data, columns, loading, emptyState, pagination }: DataTableProps<T>) {
+export function DataTable<T>({ data, columns, loading, emptyState, pagination, renderExpandedRow }: DataTableProps<T>) {
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  const toggleRow = (index: number) => {
+    const newSet = new Set(expandedRows);
+    if (newSet.has(index)) newSet.delete(index);
+    else newSet.add(index);
+    setExpandedRows(newSet);
+  };
+
   if (loading) {
     return (
       <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm">
@@ -36,15 +46,18 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination }:
   }
 
   return (
-    <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm">
-      <div className="overflow-x-auto w-full">
+    <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+      <div className="overflow-auto w-full max-h-[calc(100vh-240px)]">
         <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/75">
+          <thead className="sticky top-0 z-20">
+            <tr className="bg-slate-50 shadow-sm border-b border-slate-200">
+              {renderExpandedRow && (
+                <th className="w-10 p-4 bg-slate-50" />
+              )}
               {columns.map((col, index) => (
                 <th 
                   key={col.key || index} 
-                  className={`p-4 text-left text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap ${col.headerClassName || ''}`}
+                  className={`p-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap bg-slate-50 ${col.headerClassName || ''}`}
                 >
                   <div className="inline-flex items-center gap-1.5">
                     {col.header} 
@@ -57,18 +70,38 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination }:
             </tr>
           </thead>
           <tbody>
-            {data.map((item, rowIndex) => (
-              <tr key={rowIndex} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors group">
-                {columns.map((col, colIndex) => (
-                  <td 
-                    key={col.key || colIndex} 
-                    className={`p-4 text-sm ${col.cellClassName || ''}`}
+            {data.map((item, rowIndex) => {
+              const isExpanded = expandedRows.has(rowIndex);
+              return (
+                <React.Fragment key={rowIndex}>
+                  <tr 
+                    className={`border-b border-slate-100 hover:bg-slate-50/50 transition-colors group ${renderExpandedRow ? 'cursor-pointer' : ''}`}
+                    onClick={() => renderExpandedRow && toggleRow(rowIndex)}
                   >
-                    {col.cell(item, rowIndex)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+                    {renderExpandedRow && (
+                      <td className="p-4 pl-6 text-slate-400">
+                        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                      </td>
+                    )}
+                    {columns.map((col, colIndex) => (
+                      <td 
+                        key={col.key || colIndex} 
+                        className={`p-4 text-sm ${col.cellClassName || ''}`}
+                      >
+                        {col.cell(item, rowIndex)}
+                      </td>
+                    ))}
+                  </tr>
+                  {renderExpandedRow && isExpanded && (
+                    <tr className="bg-slate-50 border-b border-slate-100">
+                      <td colSpan={columns.length + 1} className="p-0">
+                        {renderExpandedRow(item)}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>

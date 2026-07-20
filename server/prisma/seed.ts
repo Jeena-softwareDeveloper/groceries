@@ -117,13 +117,13 @@ async function main() {
   await prisma.staticPage.upsert({
     where: { slug: 'privacy-policy' },
     update: {},
-    create: { slug: 'privacy-policy', title: 'Privacy Policy', content: '<p>Your privacy matters to DistrictMart.</p>', isActive: true },
+    create: { slug: 'privacy-policy', title: 'Privacy Policy', content: '<p>Your privacy matters to All Time Market.</p>', isActive: true },
   });
 
   await prisma.staticPage.upsert({
     where: { slug: 'terms' },
     update: {},
-    create: { slug: 'terms', title: 'Terms of Service', content: '<p>Terms and conditions for using DistrictMart.</p>', isActive: true },
+    create: { slug: 'terms', title: 'Terms of Service', content: '<p>Terms and conditions for using All Time Market.</p>', isActive: true },
   });
 
   await prisma.appSetting.upsert({ where: { key: 'minOrderValue' }, update: {}, create: { key: 'minOrderValue', value: 99 } });
@@ -172,7 +172,7 @@ async function main() {
         { icon: 'storefront-outline', number: '50+', label: 'Partner Stores' }
       ],
       download: {
-        title: 'Download the DistrictMart App',
+        title: 'Download the All Time Market App',
         subtitle: 'Get the best shopping experience on our app',
       }
     }
@@ -223,13 +223,13 @@ async function main() {
 
   // Pending vendor for approval flow
   await prisma.vendor.upsert({
-    where: { email: 'pending@districtmart.com' },
+    where: { email: 'pending@alltimemarket.com' },
     update: {},
     create: {
-      email: 'pending@districtmart.com',
+      email: 'pending@alltimemarket.com',
       passwordHash: vendorPassword,
-      shopName: 'Pending Store',
-      slug: 'pending-store',
+      shopName: 'Pending All Time Market Store',
+      slug: 'pending-all-time-market-store',
       address: '99 Test Road',
       phone: '9000000001',
       areaId: area.id,
@@ -239,7 +239,7 @@ async function main() {
   });
 
   console.log('Seed complete!');
-  console.log('  Admin:    admin@districtmart.com / Admin@123');
+  console.log('  Admin:    admin@districtmart.com / Admin@123'); // Kept original email as requested for testing
   console.log('  Vendor:   vendor@districtmart.com / Vendor@123');
   console.log('  Customer: any phone + OTP 123456');
   console.log(`  District: ${district.name} (${district.id})`);

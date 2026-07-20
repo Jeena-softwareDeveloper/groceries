@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { adminExtrasApi } from '../api';
 import { Filter, Plus, ChevronsUpDown, Eye, Edit, Trash2, ChevronLeft, ChevronRight, Ban, Send, Check } from 'lucide-react';
+import { Modal, ImageUpload } from '../components/ui';
 
 // Generic Pagination component to avoid repetition
 const Pagination = ({ count }: { count: number }) => (
@@ -20,19 +21,61 @@ const Pagination = ({ count }: { count: number }) => (
 );
 
 export function BannersPage() {
-  const [banners, setBanners] = useState<Array<{ id: string; title: string; isActive: boolean }>>([]);
+  const [banners, setBanners] = useState<Array<{ id: string; title: string; imageUrl: string; themeColor?: string; themeColorEnd?: string; isActive: boolean }>>([]);
   const [title, setTitle] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [themeColor, setThemeColor] = useState('#16a34a');
+  const [themeColorEnd, setThemeColorEnd] = useState('#4ade80'); // lighter shade by default
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = () => adminExtrasApi.banners.getAll().then((r) => setBanners(r.data));
   useEffect(() => { load(); }, []);
 
-  const create = async (e: React.FormEvent) => {
+  const createOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await adminExtrasApi.banners.create({ title, imageUrl: 'https://placehold.co/800x300', isActive: true });
+    try {
+      if (editingId) {
+        await adminExtrasApi.banners.update(editingId, { title, imageUrl: imageUrl || 'https://placehold.co/800x300', themeColor, themeColorEnd, isActive: true });
+      } else {
+        await adminExtrasApi.banners.create({ title, imageUrl: imageUrl || 'https://placehold.co/800x300', themeColor, themeColorEnd, isActive: true });
+      }
+      setTitle('');
+      setImageUrl('');
+      setThemeColor('#16a34a');
+      setThemeColorEnd('#4ade80');
+      setEditingId(null);
+      setShowForm(false);
+      load();
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.response?.data?.message || err?.message || JSON.stringify(err);
+      alert('Failed to save banner: ' + msg);
+    }
+  };
+
+  const handleEdit = (b: any) => {
+    setEditingId(b.id);
+    setTitle(b.title);
+    setImageUrl(b.imageUrl || '');
+    setThemeColor(b.themeColor || '#16a34a');
+    setThemeColorEnd(b.themeColorEnd || '#4ade80');
+    setShowForm(true);
+  };
+
+  const handleAdd = () => {
+    setEditingId(null);
     setTitle('');
-    setShowForm(false);
-    load();
+    setImageUrl('');
+    setThemeColor('#16a34a');
+    setThemeColorEnd('#4ade80');
+    setShowForm(!showForm);
+  };
+
+  const remove = async (id: string) => {
+    if (confirm('Are you sure you want to delete this banner?')) {
+      await adminExtrasApi.banners.delete(id);
+      load();
+    }
   };
 
   return (
@@ -43,17 +86,52 @@ export function BannersPage() {
           <button className="flex items-center gap-2 bg-white border border-green-600 text-green-600 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-50">
             <Filter size={16} /> Filters
           </button>
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
+          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={handleAdd}>
             <Plus size={16} /> Add Banner
           </button>
         </div>
       </div>
-      {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={create}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Banner</button>
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? 'Edit Banner' : 'Add Banner'}>
+        <form className="flex flex-col gap-4" onSubmit={createOrUpdate}>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+            <input className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Image</label>
+            <ImageUpload value={imageUrl} onChange={setImageUrl} folder="districtmart-banners" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Header Gradient Colors</label>
+            {/* Live gradient preview */}
+            <div
+              className="w-full h-12 rounded-xl mb-3 border border-slate-200"
+              style={{ background: `linear-gradient(135deg, ${themeColor}, ${themeColorEnd})` }}
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1">Start Color</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="w-9 h-9 p-0.5 border border-slate-200 rounded cursor-pointer flex-shrink-0" />
+                  <input type="text" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="flex-1 px-2 py-1.5 border border-slate-200 rounded-lg text-xs outline-none uppercase font-mono min-w-0" placeholder="#HEX" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1">End Color</label>
+                <div className="flex items-center gap-2">
+                  <input type="color" value={themeColorEnd} onChange={(e) => setThemeColorEnd(e.target.value)} className="w-9 h-9 p-0.5 border border-slate-200 rounded cursor-pointer flex-shrink-0" />
+                  <input type="text" value={themeColorEnd} onChange={(e) => setThemeColorEnd(e.target.value)} className="flex-1 px-2 py-1.5 border border-slate-200 rounded-lg text-xs outline-none uppercase font-mono min-w-0" placeholder="#HEX" />
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-slate-500 mt-2">🎨 These 2 colors create a gradient for the app's top header when this banner is active.</p>
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors">Cancel</button>
+            <button type="submit" className="bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">{editingId ? 'Update Banner' : 'Save Banner'}</button>
+          </div>
         </form>
-      )}
+      </Modal>
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
@@ -62,6 +140,7 @@ export function BannersPage() {
                 <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">#</th>
                 <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap"><div className="inline-flex items-center gap-1.5">Image <ChevronsUpDown size={14} className="text-slate-400" /></div></th>
                 <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap"><div className="inline-flex items-center gap-1.5">Title <ChevronsUpDown size={14} className="text-slate-400" /></div></th>
+                <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">Color</th>
                 <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap"><div className="inline-flex items-center gap-1.5">Status <ChevronsUpDown size={14} className="text-slate-400" /></div></th>
                 <th className="p-4 text-left text-xs font-bold text-slate-900 capitalize whitespace-nowrap">Actions</th>
               </tr>
@@ -70,8 +149,22 @@ export function BannersPage() {
               {banners.map((b, i) => (
                 <tr key={b.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
                   <td className="p-4 text-sm font-medium text-slate-900">{i + 1}</td>
-                  <td className="p-4"><img src="https://placehold.co/100x40" alt="Banner" className="rounded border border-slate-200" /></td>
+                  <td className="p-4"><img src={b.imageUrl || "https://placehold.co/100x40"} alt="Banner" className="rounded border border-slate-200 max-w-[100px] max-h-[40px] object-cover" /></td>
                   <td className="p-4 text-sm font-medium text-slate-900">{b.title}</td>
+                  <td className="p-4">
+                    {b.themeColor ? (
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-24 h-6 rounded-full border border-slate-200 flex-shrink-0"
+                          style={{
+                            background: b.themeColorEnd
+                              ? `linear-gradient(90deg, ${b.themeColor}, ${b.themeColorEnd})`
+                              : b.themeColor
+                          }}
+                        />
+                      </div>
+                    ) : <span className="text-slate-400">-</span>}
+                  </td>
                   <td className="p-4 text-sm align-middle">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${b.isActive !== false ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
                       {b.isActive !== false ? 'Active' : 'Inactive'}
@@ -79,8 +172,8 @@ export function BannersPage() {
                   </td>
                   <td className="p-4 text-sm align-middle">
                     <div className="flex items-center gap-2">
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => handleEdit(b)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
+                      <button onClick={() => remove(b.id)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -160,16 +253,45 @@ export function MicroBannersPage() {
   const [items, setItems] = useState<Array<{ id: string; title: string; isActive: boolean }>>([]);
   const [title, setTitle] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = () => adminExtrasApi.microBanners.getAll().then((r) => setItems(r.data));
   useEffect(() => { load(); }, []);
 
-  const create = async (e: React.FormEvent) => {
+  const createOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await adminExtrasApi.microBanners.create({ title, imageUrl: 'https://placehold.co/400x100', isActive: true });
+    try {
+      if (editingId) {
+        await adminExtrasApi.microBanners.update(editingId, { title, isActive: true });
+      } else {
+        await adminExtrasApi.microBanners.create({ title, imageUrl: 'https://placehold.co/400x100', isActive: true });
+      }
+      setTitle('');
+      setEditingId(null);
+      setShowForm(false);
+      load();
+    } catch (err: any) {
+      alert('Failed: ' + (err?.response?.data?.error || err.message));
+    }
+  };
+
+  const handleEdit = (r: any) => {
+    setEditingId(r.id);
+    setTitle(r.title);
+    setShowForm(true);
+  };
+
+  const handleAdd = () => {
+    setEditingId(null);
     setTitle('');
-    setShowForm(false);
-    load();
+    setShowForm(true);
+  };
+
+  const remove = async (id: string) => {
+    if (confirm('Delete this micro banner?')) {
+      await adminExtrasApi.microBanners.delete(id);
+      load();
+    }
   };
 
   return (
@@ -180,17 +302,22 @@ export function MicroBannersPage() {
           <button className="flex items-center gap-2 bg-white border border-green-600 text-green-600 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-50">
             <Filter size={16} /> Filters
           </button>
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
+          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={handleAdd}>
             <Plus size={16} /> Add Micro Banner
           </button>
         </div>
       </div>
-      {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={create}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Micro Banner</button>
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? 'Edit Micro Banner' : 'Add Micro Banner'}>
+        <form className="flex flex-col gap-4" onSubmit={createOrUpdate}>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+            <input className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          </div>
+          <div className="flex justify-end pt-2">
+            <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Micro Banner</button>
+          </div>
         </form>
-      )}
+      </Modal>
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
@@ -216,8 +343,8 @@ export function MicroBannersPage() {
                   </td>
                   <td className="p-4 text-sm align-middle">
                     <div className="flex items-center gap-2">
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => handleEdit(b)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
+                      <button onClick={() => remove(b.id)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -232,21 +359,82 @@ export function MicroBannersPage() {
 }
 
 export function DeliveryChargesPage() {
-  const [rules, setRules] = useState<Array<{ id: string; name: string; charge: number; freeAbove?: number; isActive: boolean }>>([]);
+  const [rules, setRules] = useState<any[]>([]);
   const [name, setName] = useState('');
   const [charge, setCharge] = useState('29');
+  const [freeAbove, setFreeAbove] = useState('');
+  const [bannerTitle, setBannerTitle] = useState('');
+  const [bannerSubtitle, setBannerSubtitle] = useState('');
+  const [bannerIcon, setBannerIcon] = useState('');
+  const [bannerBgColor, setBannerBgColor] = useState('');
+  const [bannerTextColor, setBannerTextColor] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = () => adminExtrasApi.deliveryCharges.getAll().then((r) => setRules(r.data));
   useEffect(() => { load(); }, []);
 
-  const create = async (e: React.FormEvent) => {
+  const createOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await adminExtrasApi.deliveryCharges.create({ name, charge: Number(charge), minDistance: 0, maxDistance: 10, freeAbove: 199, isActive: true });
+    try {
+      const payload = { 
+        name, 
+        charge: Number(charge),
+        freeAbove: freeAbove ? Number(freeAbove) : null,
+        bannerTitle: bannerTitle || null,
+        bannerSubtitle: bannerSubtitle || null,
+        bannerIcon: bannerIcon || null,
+        bannerBgColor: bannerBgColor || null,
+        bannerTextColor: bannerTextColor || null,
+        isActive: true
+      };
+      
+      if (editingId) {
+        await adminExtrasApi.deliveryCharges.update(editingId, payload);
+      } else {
+        await adminExtrasApi.deliveryCharges.create({ ...payload, minDistance: 0, maxDistance: 10 });
+      }
+      setName('');
+      setCharge('29');
+      setEditingId(null);
+      setShowForm(false);
+      load();
+    } catch (err: any) {
+      alert('Failed: ' + (err?.response?.data?.error || err.message));
+    }
+  };
+
+  const handleEdit = (r: any) => {
+    setEditingId(r.id);
+    setName(r.name);
+    setCharge(r.charge.toString());
+    setFreeAbove(r.freeAbove?.toString() || '');
+    setBannerTitle(r.bannerTitle || '');
+    setBannerSubtitle(r.bannerSubtitle || '');
+    setBannerIcon(r.bannerIcon || '');
+    setBannerBgColor(r.bannerBgColor || '#f0fdf4');
+    setBannerTextColor(r.bannerTextColor || '#16a34a');
+    setShowForm(true);
+  };
+
+  const handleAdd = () => {
+    setEditingId(null);
     setName('');
-    setCharge('');
-    setShowForm(false);
-    load();
+    setCharge('29');
+    setFreeAbove('199');
+    setBannerTitle('FREE DELIVERY');
+    setBannerSubtitle('');
+    setBannerIcon('bicycle');
+    setBannerBgColor('#f0fdf4'); // Default light green
+    setBannerTextColor('#16a34a'); // Default dark green
+    setShowForm(true);
+  };
+
+  const remove = async (id: string) => {
+    if (confirm('Delete this rule?')) {
+      await adminExtrasApi.deliveryCharges.delete(id);
+      load();
+    }
   };
 
   return (
@@ -254,18 +442,67 @@ export function DeliveryChargesPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="m-0 text-2xl text-slate-900 font-bold">Delivery Charges</h1>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
+          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={handleAdd}>
             <Plus size={16} /> Add Rule
           </button>
         </div>
       </div>
-      {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={create}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Rule name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Charge ₹" value={charge} onChange={(e) => setCharge(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Rule</button>
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? 'Edit Rule' : 'Add Rule'}>
+        <form className="flex flex-col gap-5 p-2" onSubmit={createOrUpdate}>
+          <div>
+            <label className="block text-sm font-semibold text-slate-800 mb-1.5">Rule Name</label>
+            <input className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="e.g. Standard" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Base Charge (₹)</label>
+              <input type="number" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="29" value={charge} onChange={(e) => setCharge(e.target.value)} required />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Free Above (₹)</label>
+              <input type="number" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="199" value={freeAbove} onChange={(e) => setFreeAbove(e.target.value)} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Banner Title</label>
+              <input className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="e.g. FREE DELIVERY" value={bannerTitle} onChange={(e) => setBannerTitle(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Banner Subtitle</label>
+              <input className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="e.g. On all orders above ₹199" value={bannerSubtitle} onChange={(e) => setBannerSubtitle(e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-800 mb-1.5">Banner Icon <span className="text-slate-500 font-normal">(Ionicons Name or Lottie URL)</span></label>
+            <input className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all" placeholder="e.g. bicycle or https://..." value={bannerIcon} onChange={(e) => setBannerIcon(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Background Color</label>
+              <div className="flex items-center gap-2">
+                <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-slate-200 shrink-0 shadow-sm cursor-pointer">
+                  <input type="color" className="absolute -top-2 -left-2 w-14 h-14 cursor-pointer border-0 p-0" value={bannerBgColor} onChange={(e) => setBannerBgColor(e.target.value)} />
+                </div>
+                <input className="flex-1 min-w-0 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 transition-all uppercase" placeholder="#f0fdf4" value={bannerBgColor} onChange={(e) => setBannerBgColor(e.target.value)} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1.5">Text/Icon Color</label>
+              <div className="flex items-center gap-2">
+                <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-slate-200 shrink-0 shadow-sm cursor-pointer">
+                  <input type="color" className="absolute -top-2 -left-2 w-14 h-14 cursor-pointer border-0 p-0" value={bannerTextColor} onChange={(e) => setBannerTextColor(e.target.value)} />
+                </div>
+                <input className="flex-1 min-w-0 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:bg-white focus:border-green-500 transition-all uppercase" placeholder="#16a34a" value={bannerTextColor} onChange={(e) => setBannerTextColor(e.target.value)} />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end pt-4 mt-2 border-t border-slate-100">
+            <button type="button" onClick={() => setShowForm(false)} className="mr-3 px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+            <button type="submit" className="flex items-center gap-2 bg-green-600 text-white px-8 py-2.5 rounded-lg text-sm font-semibold cursor-pointer shadow-md shadow-green-600/20 transition-all hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5">Save Rule</button>
+          </div>
         </form>
-      )}
+      </Modal>
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
@@ -293,8 +530,8 @@ export function DeliveryChargesPage() {
                   </td>
                   <td className="p-4 text-sm align-middle">
                     <div className="flex items-center gap-2">
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => handleEdit(r)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
+                      <button onClick={() => remove(r.id)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -312,16 +549,45 @@ export function OffersPage() {
   const [offers, setOffers] = useState<Array<{ id: string; title: string; scope: string; isActive: boolean }>>([]);
   const [title, setTitle] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = () => adminExtrasApi.offers.getAll().then((r) => setOffers(r.data));
   useEffect(() => { load(); }, []);
 
-  const create = async (e: React.FormEvent) => {
+  const createOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await adminExtrasApi.offers.create({ title, scope: 'PLATFORM', discountAmt: 10, isActive: true });
+    try {
+      if (editingId) {
+        await adminExtrasApi.offers.update(editingId, { title, isActive: true });
+      } else {
+        await adminExtrasApi.offers.create({ title, scope: 'PLATFORM', discountAmt: 10, isActive: true });
+      }
+      setTitle('');
+      setEditingId(null);
+      setShowForm(false);
+      load();
+    } catch (err: any) {
+      alert('Failed: ' + (err?.response?.data?.error || err.message));
+    }
+  };
+
+  const handleEdit = (r: any) => {
+    setEditingId(r.id);
+    setTitle(r.title);
+    setShowForm(true);
+  };
+
+  const handleAdd = () => {
+    setEditingId(null);
     setTitle('');
-    setShowForm(false);
-    load();
+    setShowForm(true);
+  };
+
+  const remove = async (id: string) => {
+    if (confirm('Delete this offer?')) {
+      await adminExtrasApi.offers.delete(id);
+      load();
+    }
   };
 
   return (
@@ -329,17 +595,22 @@ export function OffersPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="m-0 text-2xl text-slate-900 font-bold">Offers</h1>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
+          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={handleAdd}>
             <Plus size={16} /> Add Offer
           </button>
         </div>
       </div>
-      {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={create}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Offer</button>
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? 'Edit Offer' : 'Add Offer'}>
+        <form className="flex flex-col gap-4" onSubmit={createOrUpdate}>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+            <input className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          </div>
+          <div className="flex justify-end pt-2">
+            <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Offer</button>
+          </div>
         </form>
-      )}
+      </Modal>
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
@@ -365,8 +636,8 @@ export function OffersPage() {
                   </td>
                   <td className="p-4 text-sm align-middle">
                     <div className="flex items-center gap-2">
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => handleEdit(o)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
+                      <button onClick={() => remove(o.id)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -384,16 +655,45 @@ export function CouponsPage() {
   const [coupons, setCoupons] = useState<Array<{ id: string; code: string; discountValue: number; isActive: boolean }>>([]);
   const [code, setCode] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = () => adminExtrasApi.coupons.getAll().then((r) => setCoupons(r.data));
   useEffect(() => { load(); }, []);
 
-  const create = async (e: React.FormEvent) => {
+  const createOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    await adminExtrasApi.coupons.create({ code, discountAmt: 50, minOrder: 200, isActive: true, scope: 'PLATFORM' });
+    try {
+      if (editingId) {
+        await adminExtrasApi.coupons.update(editingId, { code, isActive: true });
+      } else {
+        await adminExtrasApi.coupons.create({ code, discountAmt: 50, minOrder: 200, isActive: true, scope: 'PLATFORM' });
+      }
+      setCode('');
+      setEditingId(null);
+      setShowForm(false);
+      load();
+    } catch (err: any) {
+      alert('Failed: ' + (err?.response?.data?.error || err.message));
+    }
+  };
+
+  const handleEdit = (c: any) => {
+    setEditingId(c.id);
+    setCode(c.code);
+    setShowForm(true);
+  };
+
+  const handleAdd = () => {
+    setEditingId(null);
     setCode('');
-    setShowForm(false);
-    load();
+    setShowForm(true);
+  };
+
+  const remove = async (id: string) => {
+    if (confirm('Delete this coupon?')) {
+      await adminExtrasApi.coupons.delete(id);
+      load();
+    }
   };
 
   return (
@@ -401,17 +701,22 @@ export function CouponsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="m-0 text-2xl text-slate-900 font-bold">Coupons</h1>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={() => setShowForm(!showForm)}>
+          <button className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700" onClick={handleAdd}>
             <Plus size={16} /> Add Coupon
           </button>
         </div>
       </div>
-      {showForm && (
-        <form className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm" onSubmit={create}>
-          <input className="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all" placeholder="Code" value={code} onChange={(e) => setCode(e.target.value)} required />
-          <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Coupon</button>
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? 'Edit Coupon' : 'Add Coupon'}>
+        <form className="flex flex-col gap-4" onSubmit={createOrUpdate}>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Coupon Code</label>
+            <input className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100 transition-all uppercase" placeholder="e.g. WELCOME50" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} required />
+          </div>
+          <div className="flex justify-end pt-2">
+            <button type="submit" className="flex items-center gap-2 bg-green-600 border border-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-green-700">Save Coupon</button>
+          </div>
         </form>
-      )}
+      </Modal>
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
@@ -437,8 +742,8 @@ export function CouponsPage() {
                   </td>
                   <td className="p-4 text-sm align-middle">
                     <div className="flex items-center gap-2">
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
-                      <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => handleEdit(c)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-slate-500 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors"><Edit size={14} /></button>
+                      <button onClick={() => remove(c.id)} className="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-md text-red-600 cursor-pointer hover:bg-red-50 hover:border-red-200 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>

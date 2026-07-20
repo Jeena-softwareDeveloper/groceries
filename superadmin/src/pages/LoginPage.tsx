@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
-  ShoppingBasket, Store, Package, BarChart3, ShieldCheck, Mail, Lock, Eye, EyeOff, AlertCircle
+  ShoppingBasket, Store, Package, BarChart3, ShieldCheck, Mail, Lock, Eye, EyeOff, AlertCircle, ShoppingBag, Leaf
 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -38,11 +38,11 @@ export default function LoginPage() {
       {/* Left Branding Panel */}
       <div className="flex-1 bg-green-600 text-white flex flex-col justify-center p-10 md:p-16 relative overflow-hidden">
         <div className="relative z-10 max-w-[480px] mx-auto w-full flex flex-col md:items-start items-center md:text-left text-center">
-          <div className="inline-flex bg-green-500 p-3 rounded-xl mb-5">
-            <ShoppingBasket size={40} color="#ffffff" />
+          <div className="inline-flex w-20 h-20 mb-5 items-center justify-center">
+            <img src="/logo.png" alt="All Time Market" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-4xl font-bold m-0 mb-2">DistrictMart</h1>
-          <p className="text-lg font-medium m-0 mb-8 opacity-90">Multi-Vendor Grocery Marketplace</p>
+          <h1 className="text-4xl font-bold m-0 mb-2">All Time Market</h1>
+          <p className="text-lg font-medium m-0 mb-8 opacity-90">Fresh Groceries, Fast Delivery</p>
           
           <div className="h-px bg-white/20 w-full mb-8"></div>
           
@@ -165,17 +165,6 @@ export default function LoginPage() {
             <button type="submit" className="w-full flex items-center justify-center gap-2 bg-green-600 text-white border-none py-3.5 rounded-lg text-base font-semibold cursor-pointer hover:bg-green-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed" disabled={loading}>
               <Lock size={18} />
               {loading ? 'Signing in…' : 'Sign In'}
-            </button>
-            
-            <div className="flex items-center text-center my-6 text-slate-400 text-xs font-semibold before:content-[''] before:flex-1 before:border-b before:border-slate-200 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-slate-200 after:ml-4">OR</div>
-            
-            <button 
-              type="button" 
-              className="w-full flex items-center justify-center gap-2 bg-white text-green-600 border border-slate-200 py-3.5 rounded-lg text-base font-semibold cursor-pointer hover:border-green-600 hover:bg-green-50 transition-all"
-              onClick={() => window.location.href = '/vendor/login'}
-            >
-              <Store size={18} />
-              Vendor Login
             </button>
           </form>
 

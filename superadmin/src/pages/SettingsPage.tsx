@@ -16,7 +16,7 @@ export default function SettingsPage() {
     taxPercent: '5',
     
     // Platform
-    platformName: 'DistrictMart',
+    platformName: 'All Time Market',
     platformTagline: 'Empowering local commerce',
     defaultCurrency: 'INR (₹)',
     timezone: 'Asia/Kolkata (IST)',
@@ -58,8 +58,8 @@ export default function SettingsPage() {
     notifEmailEnabled: true,
     
     // SEO
-    seoTitle: 'DistrictMart - Local Marketplace',
-    seoDesc: 'DistrictMart is a local marketplace connecting buyers with trusted vendors. Shop from a wide range of products with great offers and fast delivery.',
+    seoTitle: 'All Time Market - Local Marketplace',
+    seoDesc: 'All Time Market is a local marketplace connecting buyers with trusted vendors. Shop from a wide range of products with great offers and fast delivery.',
     seoKeywords: 'marketplace, online shopping, local vendors, buy online',
     seoGaId: 'G-XXXXXXXXXX',
     seoSearchConsole: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

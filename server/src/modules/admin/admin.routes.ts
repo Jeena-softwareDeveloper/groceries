@@ -10,11 +10,13 @@ import { analyticsRoutes, customersAdminRoutes, notificationsAdminRoutes, static
 import { vendorRequestAdminRoutes } from '../vendor-request/vendor-request.admin.routes.js';
 import { productApprovalAdminRoutes, offerApprovalAdminRoutes } from './product-approvals/product-approval.routes.js';
 
+import { dashboardRoutes } from './dashboard/dashboard.routes.js';
 
 export const adminRoutes = Router();
 
 adminRoutes.use(authenticate, authorize('SUPER_ADMIN'));
 
+adminRoutes.use('/dashboard', dashboardRoutes);
 adminRoutes.use('/districts', districtRoutes);
 adminRoutes.use('/areas', areaRoutes);
 adminRoutes.use('/categories', categoryRoutes);

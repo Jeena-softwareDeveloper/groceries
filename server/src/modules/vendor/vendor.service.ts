@@ -380,7 +380,7 @@ export async function listVendorCustomers(vendorId: string, page = 1, limit = 20
     where: {
       vendorId,
       status: { not: 'CANCELLED' },
-      ...(search ? { customer: { name: { contains: search, mode: 'insensitive' as const } } } : {}),
+      ...(search ? { customer: { name: { contains: search } } } : {}),
     },
     _sum: { grandTotal: true },
     _count: true,
@@ -405,7 +405,7 @@ export async function listVendorCustomers(vendorId: string, page = 1, limit = 20
   const items = customerStats.map((s) => ({
     customer: customerMap[s.customerId],
     orderCount: s._count,
-    lifetimeValue: Number(s._sum.grandTotal ?? 0),
+    lifetimeValue: Number(s._sum?.grandTotal ?? 0),
   }));
 
   return { items, total, page, limit };
@@ -529,7 +529,7 @@ export async function listProductApprovals(status?: string, page = 1, limit = 20
             images: { where: { isPrimary: true }, take: 1 },
             category: { select: { id: true, name: true } },
             inventory: true,
-            vendor: { select: { id: true, shopName: true } },
+            vendor: { select: { id: true, shopName: true, email: true, phone: true, status: true, rating: true } },
           },
         },
       },

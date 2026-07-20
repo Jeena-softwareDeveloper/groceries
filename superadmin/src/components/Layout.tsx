@@ -3,7 +3,7 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { vendorRequestApi } from '../api/vendor-request.api';
 import {
-  LayoutDashboard, MapPin, Map, Grid, Store, Image, Layers, Truck, Tag, Ticket, BarChart3, Users, Bell, Settings, LogOut, ShoppingBasket, Search, HelpCircle, Menu, ChevronDown, ClipboardList
+  LayoutDashboard, MapPin, Map, Grid, Store, Image, Layers, Truck, Tag, Ticket, BarChart3, Users, Bell, Settings, LogOut, ShoppingBasket, Search, HelpCircle, Menu, ChevronDown, ClipboardList, ShoppingBag, Leaf
 } from 'lucide-react';
 
 
@@ -51,12 +51,12 @@ export default function Layout() {
       {/* Sidebar */}
       <aside className="w-[260px] bg-[#0d3d25] text-white flex flex-col shrink-0">
         <div className="p-6 flex items-center gap-3 shrink-0">
-          <div className="bg-green-600 p-1.5 rounded-lg flex items-center justify-center">
-            <ShoppingBasket size={24} color="#ffffff" />
+          <div className="flex items-center justify-center relative w-11 h-11">
+            <img src="/logo.png" alt="All Time Market" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
-            <h2 className="m-0 text-lg font-bold tracking-wide">DistrictMart</h2>
-            <span className="text-[10px] text-slate-300 uppercase">Super Admin</span>
+            <h2 className="m-0 text-[17px] font-bold tracking-wide">All Time Market</h2>
+            <span className="text-[9px] text-green-100 font-medium tracking-wide">Fresh Groceries, Fast Delivery</span>
           </div>
         </div>
 

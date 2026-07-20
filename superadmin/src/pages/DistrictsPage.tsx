@@ -167,13 +167,7 @@ export default function DistrictsPage() {
         </form>
       )}
 
-      <SearchBar 
-        value={search} 
-        onChange={setSearch} 
-        placeholder="Search districts..." 
-        totalCount={districts.length} 
-        totalLabel="total districts"
-      />
+
 
       <DataTable 
         columns={columns}

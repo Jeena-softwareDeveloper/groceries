@@ -31,8 +31,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">D</span>
-          <span className="text-lg font-bold text-gray-900">District<span className="text-primary-600">Mart</span></span>
+          <img src="/logo.png" alt="All Time Market" className="w-10 h-10 object-contain" />
+          <span className="text-xl font-bold text-gray-900 tracking-tight">All Time Market</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

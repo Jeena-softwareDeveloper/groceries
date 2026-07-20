@@ -1,15 +1,17 @@
 import axios from 'axios';
+import { sessionManager } from '../utils/session';
 import type { ApiResponse } from '@shared/types';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:3000';
 
 export const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  config.url = `/api/v1${config.url}`;
+  const token = sessionManager.getAccessToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -18,8 +20,7 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      sessionManager.clearSession();
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
@@ -30,20 +31,9 @@ api.interceptors.response.use(
 
 export type { ApiResponse };
 
-export function getDistrictId(): string {
-  return localStorage.getItem('districtId') ?? '';
-}
-
-export function getAreaId(): string | null {
-  return localStorage.getItem('areaId');
-}
-
-export function setLocation(districtId: string, areaId?: string, districtName?: string, areaName?: string) {
-  localStorage.setItem('districtId', districtId);
-  if (areaId) localStorage.setItem('areaId', areaId);
-  if (districtName) localStorage.setItem('districtName', districtName);
-  if (areaName) localStorage.setItem('areaName', areaName);
-}
+export const getDistrictId = () => sessionManager.getDistrictId() ?? '';
+export const getAreaId = () => sessionManager.getAreaId();
+export const setLocation = (d: string, a?: string, dn?: string, an?: string) => sessionManager.setLocation(d, a, dn, an);
 
 export const unwrap = async <T>(promise: Promise<{ data: { data?: T } }>): Promise<T> => {
   const res = await promise;

@@ -55,10 +55,10 @@ export default function LoginPage() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-600 text-2xl font-bold text-white">
-            D
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center">
+            <img src="/logo.png" alt="All Time Market" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome to DistrictMart</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome to All Time Market</h1>
           <p className="mt-2 text-gray-500">Login with your phone number</p>
         </div>
 

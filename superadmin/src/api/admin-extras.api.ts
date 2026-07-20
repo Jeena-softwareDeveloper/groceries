@@ -6,6 +6,8 @@ export const adminExtrasApi = {
   banners: {
     getAll: () => api.get<ApiResponse<any>>(ENDPOINTS.ADMIN.BANNERS).then(res => res.data),
     create: (data: any) => api.post<ApiResponse<any>>(ENDPOINTS.ADMIN.BANNERS, data).then(res => res.data),
+    update: (id: string, data: any) => api.put<ApiResponse<any>>(`${ENDPOINTS.ADMIN.BANNERS}/${id}`, data).then(res => res.data),
+    delete: (id: string) => api.delete<ApiResponse<any>>(`${ENDPOINTS.ADMIN.BANNERS}/${id}`).then(res => res.data),
   },
   microBanners: {
     getAll: () => api.get<ApiResponse<any>>(ENDPOINTS.ADMIN.MICRO_BANNERS).then(res => res.data),
@@ -14,6 +16,8 @@ export const adminExtrasApi = {
   deliveryCharges: {
     getAll: () => api.get<ApiResponse<any>>(ENDPOINTS.ADMIN.DELIVERY_CHARGES).then(res => res.data),
     create: (data: any) => api.post<ApiResponse<any>>(ENDPOINTS.ADMIN.DELIVERY_CHARGES, data).then(res => res.data),
+    update: (id: string, data: any) => api.put<ApiResponse<any>>(`${ENDPOINTS.ADMIN.DELIVERY_CHARGES}/${id}`, data).then(res => res.data),
+    delete: (id: string) => api.delete<ApiResponse<any>>(`${ENDPOINTS.ADMIN.DELIVERY_CHARGES}/${id}`).then(res => res.data),
   },
   offers: {
     getAll: () => api.get<ApiResponse<any>>(ENDPOINTS.ADMIN.OFFERS).then(res => res.data),

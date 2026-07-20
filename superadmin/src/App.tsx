@@ -8,36 +8,20 @@ import AreasPage from './pages/AreasPage';
 import CategoriesPage from './pages/CategoriesPage';
 import VendorsPage from './pages/VendorsPage';
 import SettingsPage from './pages/SettingsPage';
-import VendorLoginPage from './pages/VendorLoginPage';
-import VendorLayout, { VendorDashboard, VendorProducts, VendorOrders, VendorInventory } from './pages/VendorPanel';
 import AnalyticsPage from './pages/AnalyticsPage';
 import { BannersPage, CustomersPage, NotificationsPage, OffersPage, CouponsPage, MicroBannersPage, DeliveryChargesPage } from './pages/AdminExtras';
 import VendorRequestsPage from './pages/VendorRequestsPage';
 import ProductApprovalsPage from './pages/ProductApprovalsPage';
 
 
-import { AdminRoute, VendorRoute } from './guards';
+import { AdminRoute, GuestRoute } from './guards';
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/vendor/login" element={<VendorLoginPage />} />
-          <Route
-            path="/vendor"
-            element={
-              <VendorRoute>
-                <VendorLayout />
-              </VendorRoute>
-            }
-          >
-            <Route index element={<VendorDashboard />} />
-            <Route path="products" element={<VendorProducts />} />
-            <Route path="inventory" element={<VendorInventory />} />
-            <Route path="orders" element={<VendorOrders />} />
-          </Route>
+          <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
           <Route
             path="/"
             element={
