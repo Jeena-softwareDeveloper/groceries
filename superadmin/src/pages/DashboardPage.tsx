@@ -55,8 +55,8 @@ export default function DashboardPage() {
           <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-3 sm:p-4 lg:p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div className="min-w-0 flex-1 pr-2">
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 sm:mb-2 truncate">{kpi.label}</span>
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight m-0 truncate">{kpi.value}</h3>
+                <span className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1 sm:mb-2 truncate">{kpi.label}</span>
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight m-0 text-slate-700 truncate">{kpi.value}</h3>
               </div>
               <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
                 <kpi.icon size={16} strokeWidth={2.5} />
@@ -117,14 +117,14 @@ export default function DashboardPage() {
         {/* Sales Overview */}
         <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4 sm:mb-5">
-            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Sales Overview</h3>
+            <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Sales Overview</h3>
             <button className="appearance-none px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100">
               This Month
             </button>
           </div>
           <div className="mb-6">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Sales</span>
-            <div className="flex flex-wrap items-end gap-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+            <div className="flex flex-wrap items-end gap-2 text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-700">
               ₹{data.salesOverview.total.toLocaleString('en-IN')}
               <span className="flex items-center text-sm text-emerald-600 font-bold mb-1.5">
                 <TrendingUp size={16} className="mr-1" strokeWidth={3} /> {data.salesOverview.percentage}
@@ -141,8 +141,8 @@ export default function DashboardPage() {
               { label: 'Avg. Order Value', value: `₹${data.salesOverview.avgOrder.toLocaleString('en-IN')}` },
             ].map((stat: any, i: number) => (
               <div key={i} className="text-center px-2">
-                <strong className="block text-lg font-bold mb-1">{stat.value}</strong>
-                <span className="text-xs font-medium text-slate-500">{stat.label}</span>
+                <strong className="block text-base font-semibold mb-0.5 text-slate-700">{stat.value}</strong>
+                <span className="text-xs font-normal text-slate-400">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -151,7 +151,7 @@ export default function DashboardPage() {
         {/* Recent Orders */}
         <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Recent Orders</h3>
+            <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Recent Orders</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
         {/* Top Categories */}
         <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4 sm:mb-5">
-            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Top Categories</h3>
+            <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Top Categories</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
         {/* Top Vendors Table */}
         <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Top Vendors</h3>
+            <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Top Vendors</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>

@@ -6,8 +6,9 @@
 body {
   margin: 0;
   font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
   background: #f8fafc;
-  color: #0f172a;
+  color: #475569;
 }
 
 .badge {
