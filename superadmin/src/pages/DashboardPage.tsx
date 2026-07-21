@@ -42,38 +42,38 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-[1600px] mx-auto pb-12 text-slate-900">
+    <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6 w-full max-w-[1600px] mx-auto pb-8 text-slate-900">
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: 'Total Vendors', value: data.kpi.totalVendors.toString(), delta: data.kpi.vendorsDelta, icon: Store, bg: 'bg-emerald-100', color: 'text-emerald-600' },
           { label: 'Total Customers', value: data.kpi.totalCustomers.toString(), delta: data.kpi.customersDelta, icon: Users, bg: 'bg-blue-100', color: 'text-blue-600' },
           { label: 'Total Orders', value: data.kpi.totalOrders.toString(), delta: data.kpi.ordersDelta, icon: ShoppingBag, bg: 'bg-orange-100', color: 'text-orange-600' },
           { label: 'Total Revenue', value: `₹${data.kpi.totalRevenue.toLocaleString('en-IN')}`, delta: data.kpi.revenueDelta, icon: IndianRupee, bg: 'bg-emerald-100', color: 'text-emerald-600' },
         ].map((kpi: any, i: number) => (
-          <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
-            <div className="flex justify-between items-start mb-5">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">{kpi.label}</span>
-                <h3 className="text-3xl font-bold tracking-tight m-0">{kpi.value}</h3>
+          <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-3 sm:p-4 lg:p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
+            <div className="flex justify-between items-start mb-3 sm:mb-4">
+              <div className="min-w-0 flex-1 pr-2">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 sm:mb-2 truncate">{kpi.label}</span>
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight m-0 truncate">{kpi.value}</h3>
               </div>
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
-                <kpi.icon size={20} strokeWidth={2.5} />
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
+                <kpi.icon size={16} strokeWidth={2.5} />
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <div className="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-xs font-medium text-slate-500">
               <span className="flex items-center text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 font-bold">
-                <TrendingUp size={11} className="mr-1" strokeWidth={3} /> {kpi.delta}
+                <TrendingUp size={10} className="mr-0.5" strokeWidth={3} /> {kpi.delta}
               </span>
-              <span className="opacity-70 group-hover:opacity-100 transition-opacity">vs last 30 days</span>
+              <span className="opacity-70 hidden sm:inline">vs last 30 days</span>
             </div>
           </div>
         ))}
       </div>
 
       {/* System Health Status Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800/50 rounded-2xl p-5 shadow-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800/50 rounded-2xl p-3 sm:p-4 lg:p-5 shadow-sm">
         <div className="flex flex-col gap-1.5">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
             {health?.status === 'ok' ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <AlertCircle size={14} className="text-red-400" />}
@@ -113,18 +113,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 1: Sales Overview & Recent Orders */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-4 sm:gap-5">
         {/* Sales Overview */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold tracking-tight m-0">Sales Overview</h3>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-4 sm:mb-5">
+            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Sales Overview</h3>
             <button className="appearance-none px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100">
               This Month
             </button>
           </div>
           <div className="mb-6">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Sales</span>
-            <div className="flex items-end gap-3 text-4xl font-bold tracking-tight">
+            <div className="flex flex-wrap items-end gap-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
               ₹{data.salesOverview.total.toLocaleString('en-IN')}
               <span className="flex items-center text-sm text-emerald-600 font-bold mb-1.5">
                 <TrendingUp size={16} className="mr-1" strokeWidth={3} /> {data.salesOverview.percentage}
@@ -149,9 +149,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-lg font-bold tracking-tight m-0">Recent Orders</h3>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Recent Orders</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>
@@ -183,11 +183,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 2: Top Categories & Top Vendors */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-4 sm:gap-5">
         {/* Top Categories */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold tracking-tight m-0">Top Categories</h3>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-4 sm:mb-5">
+            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Top Categories</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>
@@ -214,9 +214,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Top Vendors Table */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-lg font-bold tracking-tight m-0">Top Vendors</h3>
+        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-base sm:text-lg font-bold tracking-tight m-0">Top Vendors</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
               View All <ArrowRight size={14} />
             </button>
