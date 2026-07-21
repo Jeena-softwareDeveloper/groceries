@@ -50,19 +50,19 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
       <div className="overflow-auto w-full max-h-[calc(100vh-200px)]">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 z-20">
-            <tr className="bg-slate-50 shadow-sm border-b border-slate-200">
+            <tr className="bg-slate-50 shadow-sm border-b border-slate-100">
               {renderExpandedRow && (
-                <th className="w-10 p-4 bg-slate-50" />
+                <th className="w-8 p-3 bg-slate-50" />
               )}
               {columns.map((col, index) => (
                 <th 
                   key={col.key || index} 
-                  className={`p-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap bg-slate-50 ${col.headerClassName || ''}`}
+                  className={`px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap bg-slate-50 ${col.headerClassName || ''}`}
                 >
-                  <div className="inline-flex items-center gap-1.5">
+                  <div className="inline-flex items-center gap-1">
                     {col.header} 
                     {index !== 0 && index !== columns.length - 1 && (
-                       <ChevronsUpDown size={12} className="text-slate-300" />
+                       <ChevronsUpDown size={11} className="text-slate-300" />
                     )}
                   </div>
                 </th>
@@ -75,18 +75,18 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
               return (
                 <React.Fragment key={rowIndex}>
                   <tr 
-                    className={`border-b border-slate-100 hover:bg-slate-50/50 transition-colors group ${renderExpandedRow ? 'cursor-pointer' : ''}`}
+                    className={`border-b border-slate-100/75 hover:bg-slate-50/60 transition-colors group ${renderExpandedRow ? 'cursor-pointer' : ''}`}
                     onClick={() => renderExpandedRow && toggleRow(rowIndex)}
                   >
                     {renderExpandedRow && (
-                      <td className="p-4 pl-6 text-slate-400">
-                        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                      <td className="p-3 pl-5 text-slate-400">
+                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                       </td>
                     )}
                     {columns.map((col, colIndex) => (
                       <td 
                         key={col.key || colIndex} 
-                        className={`p-4 text-sm ${col.cellClassName || ''}`}
+                        className={`px-4 py-3 text-sm text-slate-600 ${col.cellClassName || ''}`}
                       >
                         {col.cell(item, rowIndex)}
                       </td>

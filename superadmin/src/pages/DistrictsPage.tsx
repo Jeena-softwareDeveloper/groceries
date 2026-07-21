@@ -43,7 +43,7 @@ export default function DistrictsPage() {
           <div className="w-8 h-8 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
             <Globe size={14} className="text-indigo-500" strokeWidth={2.5} />
           </div>
-          <span className="font-bold text-slate-900">{d.name}</span>
+          <span className="font-medium text-slate-700">{d.name}</span>
         </div>
       )
     },
@@ -51,7 +51,7 @@ export default function DistrictsPage() {
       key: 'code',
       header: 'Code',
       cell: (d) => (
-        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg text-xs font-bold uppercase font-mono tracking-widest">
+        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-lg text-[11px] font-medium uppercase font-mono tracking-wider">
           {d.code}
         </span>
       )
@@ -68,13 +68,13 @@ export default function DistrictsPage() {
     {
       key: 'vendors',
       header: 'Total Vendors',
-      cellClassName: 'font-bold text-slate-700',
+      cellClassName: 'font-medium text-slate-500',
       cell: (d) => d.code === 'BLR' ? 98 : d.code === 'CHN' ? 58 : Math.floor(Math.random() * 100) // Original mock logic
     },
     {
       key: 'customers',
       header: 'Total Customers',
-      cellClassName: 'font-bold text-slate-700',
+      cellClassName: 'font-medium text-slate-500',
       cell: (d) => d.code === 'BLR' ? '12,458' : d.code === 'CHN' ? '12,110' : '4,230' // Original mock logic
     },
     {
