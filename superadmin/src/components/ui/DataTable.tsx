@@ -47,7 +47,7 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
 
   return (
     <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-      <div className="overflow-auto w-full max-h-[calc(100vh-240px)]">
+      <div className="overflow-auto w-full max-h-[calc(100vh-200px)]">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 z-20">
             <tr className="bg-slate-50 shadow-sm border-b border-slate-200">
