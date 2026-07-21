@@ -49,7 +49,7 @@ export default function AreasPage() {
       header: 'Area Name',
       cell: (a) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
             <MapPin size={14} className="text-blue-500" strokeWidth={2.5} />
           </div>
           <span className="font-bold text-slate-900">{a.name}</span>
@@ -131,13 +131,13 @@ export default function AreasPage() {
 
       {showForm && (
         <form
-          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-2xl border border-slate-200/75 shadow-sm"
+          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-lg border border-slate-200/75 shadow-sm"
           onSubmit={handleCreate}
         >
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">District</label>
             <select
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-48 appearance-none"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-48 appearance-none"
               value={districtId}
               onChange={(e) => setDistrictId(e.target.value)}
               required
@@ -150,7 +150,7 @@ export default function AreasPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Area Name</label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-52"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-52"
               placeholder="e.g. Koramangala"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -160,7 +160,7 @@ export default function AreasPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Pincode <span className="text-slate-300 normal-case font-medium">(optional)</span></label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36"
               placeholder="e.g. 560034"
               value={pincode}
               onChange={(e) => setPincode(e.target.value)}
@@ -168,7 +168,7 @@ export default function AreasPage() {
           </div>
           <button
             type="submit"
-            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
           >
             Save Area
           </button>
@@ -202,3 +202,4 @@ export default function AreasPage() {
     </div>
   );
 }
+

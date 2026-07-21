@@ -52,9 +52,9 @@ export default function AnalyticsPage() {
           { title: 'Total Vendors', value: '156', delta: '15.2%', up: true, icon: Store, color: 'text-orange-600', bg: 'bg-orange-100', line: 'orange' },
           { title: 'Average Order Value', value: '₹278', delta: '12.6%', up: true, icon: IndianRupee, color: 'text-teal-600', bg: 'bg-teal-100', line: 'teal' },
         ].map((kpi, i) => (
-          <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-5 relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default flex flex-col justify-between min-h-[140px]">
+          <div key={i} className="group bg-white border border-slate-200/75 rounded-lg p-5 relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default flex flex-col justify-between min-h-[140px]">
             <div className="flex items-center gap-3 mb-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color}`}>
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${kpi.bg} ${kpi.color}`}>
                 <kpi.icon size={18} strokeWidth={2.5} />
               </div>
               <span className="text-sm font-bold text-slate-600">{kpi.title}</span>
@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
       {/* Row 2: Revenue Line Chart & Orders Donut Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Revenue Chart */}
-        <div className="lg:col-span-2 bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="lg:col-span-2 bg-white border border-slate-200/75 rounded-lg p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-slate-900 m-0 tracking-tight">Revenue Overview</h3>
             <div className="relative">
@@ -123,7 +123,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Orders Overview */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-slate-900 m-0 tracking-tight">Orders Overview</h3>
             <div className="relative">
@@ -173,7 +173,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Trend Bar Chart */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-bold text-slate-900 m-0 tracking-tight">Revenue Trend</h3>
             <div className="relative">
@@ -231,7 +231,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Categories */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-slate-900 m-0 tracking-tight">Top Categories by Revenue</h3>
             <div className="relative">
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
             ].map((cat, i) => (
               <div key={i} className="flex items-center justify-between group cursor-default">
                 <div className="flex items-center gap-3.5 w-[35%]">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${cat.bg} ${cat.color}`}>
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${cat.bg} ${cat.color}`}>
                     <cat.icon size={16} strokeWidth={2.5} />
                   </div>
                   <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{cat.name}</span>
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Top Vendors */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-5 shadow-sm">
           <div className="flex justify-between items-center mb-5">
             <h3 className="text-sm font-bold text-slate-900 m-0 uppercase tracking-wider">Top Vendors</h3>
             <a href="#" className="text-xs font-bold text-slate-400 no-underline hover:text-slate-900 transition-colors">View All</a>
@@ -302,7 +302,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Areas */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-5 shadow-sm">
           <div className="flex justify-between items-center mb-5">
             <h3 className="text-sm font-bold text-slate-900 m-0 uppercase tracking-wider">Top Areas (Orders)</h3>
             <a href="#" className="text-xs font-bold text-slate-400 no-underline hover:text-slate-900 transition-colors">View All</a>
@@ -327,7 +327,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Top Payment Methods */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-5 shadow-sm">
           <div className="flex justify-between items-center mb-5">
             <h3 className="text-sm font-bold text-slate-900 m-0 uppercase tracking-wider">Payment Methods</h3>
             <a href="#" className="text-xs font-bold text-slate-400 no-underline hover:text-slate-900 transition-colors">View All</a>
@@ -352,7 +352,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* New Customers */}
-        <div className="bg-emerald-900 border border-emerald-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-emerald-900 border border-emerald-800 rounded-lg p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-800 rounded-bl-full opacity-50 pointer-events-none -mr-10 -mt-10"></div>
           
           <div className="flex justify-between items-center mb-2 z-10">
@@ -383,3 +383,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+

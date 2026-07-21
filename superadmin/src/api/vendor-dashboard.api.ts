@@ -17,3 +17,4 @@ export const vendorDashboardApi = {
     updateStatus: (id: string, status: string) => api.patch<ApiResponse<any>>(ENDPOINTS.VENDOR.ORDERS.UPDATE(id), { status }).then(res => res.data),
   }
 };
+

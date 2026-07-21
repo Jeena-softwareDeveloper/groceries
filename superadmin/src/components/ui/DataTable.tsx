@@ -31,7 +31,7 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200/75 rounded-lg overflow-hidden shadow-sm">
         <LoadingSkeleton />
       </div>
     );
@@ -39,14 +39,14 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
 
   if (data.length === 0 && emptyState) {
     return (
-      <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200/75 rounded-lg overflow-hidden shadow-sm">
         {emptyState}
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200/75 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+    <div className="bg-white border border-slate-200/75 rounded-lg overflow-hidden shadow-sm flex flex-col">
       <div className="overflow-auto w-full max-h-[calc(100vh-200px)]">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 z-20">
@@ -109,3 +109,4 @@ export function DataTable<T>({ data, columns, loading, emptyState, pagination, r
     </div>
   );
 }
+

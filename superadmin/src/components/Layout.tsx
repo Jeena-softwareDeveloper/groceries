@@ -107,7 +107,7 @@ export default function Layout() {
         </nav>
 
         {isSidebarOpen && (
-          <div className="mx-3 mb-3 shrink-0 bg-gradient-to-b from-[#104a2d] to-[#0d3d25] border border-white/10 rounded-xl p-4 text-left relative overflow-hidden">
+          <div className="mx-3 mb-3 shrink-0 bg-gradient-to-b from-[#104a2d] to-[#0d3d25] border border-white/10 rounded-lg p-4 text-left relative overflow-hidden">
             <h4 className="m-0 mb-1 text-xs font-bold relative z-10 whitespace-nowrap">Grow your marketplace</h4>
             <p className="m-0 mb-3 text-[11px] text-slate-300 leading-snug relative z-10">Add more vendors and increase your reach.</p>
             <button type="button" className="w-full bg-green-600 text-white border-none py-1.5 rounded-md text-[11px] font-semibold cursor-pointer relative z-10 hover:bg-green-700 transition-colors">
@@ -219,3 +219,4 @@ export default function Layout() {
     </div>
   );
 }
+

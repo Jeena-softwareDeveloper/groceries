@@ -10,3 +10,4 @@ export const vendorApi = {
   approve: (id: string) => api.post<ApiResponse<Vendor>>(ENDPOINTS.ADMIN.VENDORS.APPROVE(id)).then(res => res.data),
   reject: (id: string, data: RejectVendorDto) => api.post<ApiResponse<Vendor>>(ENDPOINTS.ADMIN.VENDORS.REJECT(id), data).then(res => res.data),
 };
+

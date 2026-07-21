@@ -52,13 +52,13 @@ export default function DashboardPage() {
           { label: 'Total Orders', value: data.kpi.totalOrders.toString(), delta: data.kpi.ordersDelta, icon: ShoppingBag, bg: 'bg-orange-100', color: 'text-orange-600' },
           { label: 'Total Revenue', value: `₹${data.kpi.totalRevenue.toLocaleString('en-IN')}`, delta: data.kpi.revenueDelta, icon: IndianRupee, bg: 'bg-emerald-100', color: 'text-emerald-600' },
         ].map((kpi: any, i: number) => (
-          <div key={i} className="group bg-white border border-slate-200/75 rounded-2xl p-3 sm:p-4 lg:p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
+          <div key={i} className="group bg-white border border-slate-200/75 rounded-lg p-3 sm:p-4 lg:p-5 flex flex-col shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default">
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div className="min-w-0 flex-1 pr-2">
                 <span className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-slate-400 block mb-1 sm:mb-2 truncate">{kpi.label}</span>
                 <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight m-0 text-slate-700 truncate">{kpi.value}</h3>
               </div>
-              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${kpi.bg} ${kpi.color} shrink-0`}>
                 <kpi.icon size={16} strokeWidth={2.5} />
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
       </div>
 
       {/* System Health Status Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800/50 rounded-2xl p-3 sm:p-4 lg:p-5 shadow-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 border border-emerald-800/50 rounded-lg p-3 sm:p-4 lg:p-5 shadow-sm">
         <div className="flex flex-col gap-1.5">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
             {health?.status === 'ok' ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <AlertCircle size={14} className="text-red-400" />}
@@ -115,7 +115,7 @@ export default function DashboardPage() {
       {/* Row 1: Sales Overview & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-4 sm:gap-5">
         {/* Sales Overview */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4 sm:mb-5">
             <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Sales Overview</h3>
             <button className="appearance-none px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100">
@@ -149,7 +149,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Recent Orders</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
@@ -185,7 +185,7 @@ export default function DashboardPage() {
       {/* Row 2: Top Categories & Top Vendors */}
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr] gap-4 sm:gap-5">
         {/* Top Categories */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4 sm:mb-5">
             <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Top Categories</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
@@ -198,7 +198,7 @@ export default function DashboardPage() {
               return (
                 <div key={i} className="flex items-center justify-between group cursor-default">
                   <div className="flex items-center gap-3.5 w-[38%]">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${cat.bg} ${cat.color}`}>
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${cat.bg} ${cat.color}`}>
                       <IconComponent size={16} strokeWidth={2.5} />
                     </div>
                     <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{cat.name}</span>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Top Vendors Table */}
-        <div className="bg-white border border-slate-200/75 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/75 rounded-lg p-4 sm:p-5 lg:p-6 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0 text-slate-700">Top Vendors</h3>
             <button className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
@@ -264,3 +264,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

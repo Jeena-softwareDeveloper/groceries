@@ -9,3 +9,4 @@ export const categoryApi = {
   delete: (id: string) => api.delete<ApiResponse<any>>(`${ENDPOINTS.ADMIN.CATEGORIES}/${id}`).then(res => res.data),
   getVendorCategories: () => api.get<ApiResponse<any>>(ENDPOINTS.VENDOR.CATEGORIES).then(res => res.data),
 };
+

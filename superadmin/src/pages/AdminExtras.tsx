@@ -105,7 +105,7 @@ export function BannersPage() {
             <label className="block text-sm font-medium text-slate-700 mb-2">Header Gradient Colors</label>
             {/* Live gradient preview */}
             <div
-              className="w-full h-12 rounded-xl mb-3 border border-slate-200"
+              className="w-full h-12 rounded-lg mb-3 border border-slate-200"
               style={{ background: `linear-gradient(135deg, ${themeColor}, ${themeColorEnd})` }}
             />
             <div className="grid grid-cols-2 gap-3">
@@ -132,7 +132,7 @@ export function BannersPage() {
           </div>
         </form>
       </Modal>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -207,7 +207,7 @@ export function CustomersPage() {
           </button>
         </div>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -318,7 +318,7 @@ export function MicroBannersPage() {
           </div>
         </form>
       </Modal>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -503,7 +503,7 @@ export function DeliveryChargesPage() {
           </div>
         </form>
       </Modal>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -611,7 +611,7 @@ export function OffersPage() {
           </div>
         </form>
       </Modal>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -717,7 +717,7 @@ export function CouponsPage() {
           </div>
         </form>
       </Modal>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto w-full">
           <table className="w-full border-collapse">
             <thead>
@@ -773,7 +773,7 @@ export function NotificationsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="m-0 text-2xl text-slate-900 font-bold">Broadcast Notification</h1>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-6">
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm p-6">
         <form className="w-full max-w-[600px]" onSubmit={broadcast}>
           <label className="block mb-4">
             <span className="block mb-2 font-semibold text-slate-900 text-sm">Notification Title</span>
@@ -808,3 +808,4 @@ export function NotificationsPage() {
     </div>
   );
 }
+

@@ -20,7 +20,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       />
       
       {/* Modal Dialog */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-5 border-b border-slate-100">
           <h3 className="text-lg font-bold text-slate-900">{title}</h3>
           <button 
@@ -37,3 +37,4 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     </div>
   );
 }
+

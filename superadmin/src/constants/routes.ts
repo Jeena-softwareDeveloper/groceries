@@ -8,3 +8,4 @@ export const ROUTES = {
   CATEGORIES: '/categories',
   VENDORS: '/vendors',
 } as const;
+

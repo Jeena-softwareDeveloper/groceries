@@ -14,3 +14,4 @@ export interface CreateAreaDto {
   pincode?: string;
   isActive: boolean;
 }
+

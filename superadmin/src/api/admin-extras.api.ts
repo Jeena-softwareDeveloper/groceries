@@ -35,3 +35,4 @@ export const adminExtrasApi = {
     broadcast: (data: any) => api.post<ApiResponse<{ sent: number }>>(ENDPOINTS.ADMIN.NOTIFICATIONS.BROADCAST, data).then(res => res.data),
   }
 };
+

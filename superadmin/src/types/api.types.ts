@@ -10,3 +10,4 @@ export interface ApiResponse<T> {
   error: { code: string; message: string } | null;
   meta?: PaginationMeta;
 }
+

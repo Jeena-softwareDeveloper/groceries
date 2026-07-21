@@ -40,7 +40,7 @@ export default function DistrictsPage() {
       header: 'District Name',
       cell: (d) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center shrink-0">
             <Globe size={14} className="text-indigo-500" strokeWidth={2.5} />
           </div>
           <span className="font-medium text-slate-700">{d.name}</span>
@@ -135,13 +135,13 @@ export default function DistrictsPage() {
 
       {showForm && (
         <form
-          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-2xl border border-slate-200/75 shadow-sm"
+          className="flex flex-wrap items-end gap-4 p-5 bg-white rounded-lg border border-slate-200/75 shadow-sm"
           onSubmit={handleCreate}
         >
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">District Name</label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-56"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-56"
               placeholder="e.g. Bangalore"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -151,7 +151,7 @@ export default function DistrictsPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Code</label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36 uppercase"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-36 uppercase"
               placeholder="e.g. BLR"
               value={code}
               onChange={(e) => setCode(e.target.value)}
@@ -160,7 +160,7 @@ export default function DistrictsPage() {
           </div>
           <button
             type="submit"
-            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
           >
             Save District
           </button>
@@ -194,3 +194,4 @@ export default function DistrictsPage() {
     </div>
   );
 }
+

@@ -12,3 +12,4 @@ export interface CreateCategoryDto {
   isActive: boolean;
   parentId?: string;
 }
+

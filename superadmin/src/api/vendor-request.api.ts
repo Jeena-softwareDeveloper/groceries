@@ -70,3 +70,4 @@ export const vendorRequestApi = {
   requestInfo: (id: string, remarks: string) =>
     api.post<ApiResponse<VendorRequest>>(ENDPOINTS.ADMIN.VENDOR_REQUESTS.REQUEST_INFO(id), { remarks }).then((r) => r.data),
 };
+

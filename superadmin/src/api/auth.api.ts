@@ -8,3 +8,4 @@ export const authApi = {
   loginVendor: (data: any) => api.post<ApiResponse<{ accessToken: string; refreshToken: string }>>(ENDPOINTS.AUTH.VENDOR_LOGIN, data),
   logout: (refreshToken: string) => api.post(ENDPOINTS.AUTH.LOGOUT, { refreshToken }),
 };
+

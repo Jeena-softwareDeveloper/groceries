@@ -23,17 +23,14 @@ export function createApp() {
   app.use(helmet());
   app.use(
     cors({
-      origin:
-        env.NODE_ENV === 'development'
-          ? (origin, callback) => {
-              if (!origin) return callback(null, true);
-              if (allowedOrigins.includes(origin)) return callback(null, true);
-              if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
-                return callback(null, true);
-              }
-              callback(new Error('Not allowed by CORS'));
-            }
-          : allowedOrigins,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+          return callback(null, true);
+        }
+        callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
     }),
   );

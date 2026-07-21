@@ -177,7 +177,7 @@ export default function SettingsPage() {
   const FileUploadBox = ({ title, desc }: { title: string, desc: string }) => (
     <div className="mb-6">
       <span className="block mb-2 font-semibold text-slate-900 text-sm">{title}</span>
-      <div className="border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 flex flex-col items-center justify-center p-8 text-center hover:bg-slate-100 hover:border-slate-300 transition-colors cursor-pointer">
+      <div className="border-2 border-dashed border-slate-200 rounded-lg bg-slate-50 flex flex-col items-center justify-center p-8 text-center hover:bg-slate-100 hover:border-slate-300 transition-colors cursor-pointer">
         <UploadCloud size={24} className="text-slate-400 mb-2" />
         <span className="text-sm font-semibold text-slate-700">Upload Image</span>
         <span className="text-xs text-slate-500 mt-1">{desc}</span>
@@ -225,7 +225,7 @@ export default function SettingsPage() {
         
         {activeTab === 'General' && (
           <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_450px] xl:grid-cols-[1fr_500px] gap-6">
-            <div className="h-full bg-white border border-slate-200 rounded-xl p-6 shadow-sm overflow-y-auto styled-scrollbar">
+            <div className="h-full bg-white border border-slate-200 rounded-lg p-6 shadow-sm overflow-y-auto styled-scrollbar">
               <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">General Settings</h2>
               <p className="text-sm text-slate-500 m-0 mb-6">Configure basic platform settings</p>
 
@@ -245,28 +245,28 @@ export default function SettingsPage() {
               <p className="text-sm text-slate-500 m-0 mb-6">Enable or disable platform features</p>
 
               <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 pb-4">
-                <div className="border border-slate-200 rounded-xl p-4 flex flex-col items-start gap-4 shadow-sm">
+                <div className="border border-slate-200 rounded-lg p-4 flex flex-col items-start gap-4 shadow-sm">
                   <div className="flex justify-between w-full items-start">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><Wallet size={16} /></div>
                     <label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" className="sr-only peer" checked={formData.featWallet} onChange={() => toggle('featWallet')} /><div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div></label>
                   </div>
                   <div><h4 className="text-sm font-bold text-slate-900 m-0 mb-1">Wallet</h4><p className="text-xs text-slate-500 m-0">Enable wallet for users</p></div>
                 </div>
-                <div className="border border-slate-200 rounded-xl p-4 flex flex-col items-start gap-4 shadow-sm">
+                <div className="border border-slate-200 rounded-lg p-4 flex flex-col items-start gap-4 shadow-sm">
                   <div className="flex justify-between w-full items-start">
                     <div className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center"><Banknote size={16} /></div>
                     <label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" className="sr-only peer" checked={formData.featCod} onChange={() => toggle('featCod')} /><div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div></label>
                   </div>
                   <div><h4 className="text-sm font-bold text-slate-900 m-0 mb-1">COD</h4><p className="text-xs text-slate-500 m-0">Enable Cash on Delivery</p></div>
                 </div>
-                <div className="border border-slate-200 rounded-xl p-4 flex flex-col items-start gap-4 shadow-sm">
+                <div className="border border-slate-200 rounded-lg p-4 flex flex-col items-start gap-4 shadow-sm">
                   <div className="flex justify-between w-full items-start">
                     <div className="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center"><Star size={16} /></div>
                     <label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" className="sr-only peer" checked={formData.featRatings} onChange={() => toggle('featRatings')} /><div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div></label>
                   </div>
                   <div><h4 className="text-sm font-bold text-slate-900 m-0 mb-1">Ratings</h4><p className="text-xs text-slate-500 m-0">Allow rate and review</p></div>
                 </div>
-                <div className="border border-slate-200 rounded-xl p-4 flex flex-col items-start gap-4 shadow-sm">
+                <div className="border border-slate-200 rounded-lg p-4 flex flex-col items-start gap-4 shadow-sm">
                   <div className="flex justify-between w-full items-start">
                     <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"><Store size={16} /></div>
                     <label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" className="sr-only peer" checked={formData.featMultiVendor} onChange={() => toggle('featMultiVendor')} /><div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div></label>
@@ -276,7 +276,7 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-full overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm flex flex-col h-full overflow-hidden">
               <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
                 <div>
                   <h2 className="text-base font-bold text-slate-900 m-0 mb-0.5">Configuration Preview</h2>
@@ -330,7 +330,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Platform' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-5xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-5xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Platform Settings</h2>
             <p className="text-sm text-slate-500 m-0 mb-8">Configure your platform information and preferences</p>
             
@@ -354,7 +354,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Contact & Support' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Contact Information</h2>
             <p className="text-sm text-slate-500 m-0 mb-8">Update your support contact details</p>
             
@@ -379,7 +379,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Features' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Feature Management</h2>
             <p className="text-sm text-slate-500 m-0 mb-6">Enable or disable platform features</p>
             
@@ -397,7 +397,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Notifications' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Notification Settings</h2>
             <p className="text-sm text-slate-500 m-0 mb-6">Configure system and email notifications</p>
             
@@ -421,7 +421,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'SEO' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">SEO Settings</h2>
             <p className="text-sm text-slate-500 m-0 mb-8">Optimize your platform for search engines</p>
             
@@ -443,7 +443,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Payment' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Payment Methods</h2>
             <p className="text-sm text-slate-500 m-0 mb-6">Manage platform-wide configuration and preferences</p>
             
@@ -471,7 +471,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'Security' && (
-          <div className="h-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
+          <div className="h-full bg-white border border-slate-200 rounded-lg p-8 shadow-sm max-w-3xl overflow-y-auto styled-scrollbar">
             <h2 className="text-lg font-bold text-slate-900 m-0 mb-1">Password Policy</h2>
             <p className="text-sm text-slate-500 m-0 mb-6">Configure password requirements</p>
             
@@ -515,3 +515,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

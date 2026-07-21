@@ -13,3 +13,4 @@ export interface Vendor {
 export interface RejectVendorDto {
   reason: string;
 }
+

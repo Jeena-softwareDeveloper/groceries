@@ -12,3 +12,4 @@ export const healthApi = {
     return res.json();
   }
 };
+

@@ -162,7 +162,7 @@ export default function ProductApprovalsPage() {
       cell: (v) => (
         <button 
           onClick={() => setSelectedVendorId(v.id)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200 font-semibold text-sm"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200 font-semibold text-sm"
         >
           View Products
         </button>
@@ -258,7 +258,7 @@ export default function ProductApprovalsPage() {
             <div className="flex items-center gap-3">
               <button 
                 onClick={() => setSelectedVendorId(null)}
-                className="text-slate-400 hover:text-slate-900 transition-colors bg-white hover:bg-slate-50 p-1.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center group"
+                className="text-slate-400 hover:text-slate-900 transition-colors bg-white hover:bg-slate-50 p-1.5 rounded-lg border border-slate-200 shadow-sm flex items-center justify-center group"
                 title="Back to Stores"
               >
                 <ArrowLeft size={22} strokeWidth={2.5} className="group-hover:-translate-x-0.5 transition-transform" />
@@ -273,7 +273,7 @@ export default function ProductApprovalsPage() {
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
-              className="border border-slate-200 rounded-xl px-4 py-2.5 bg-white text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-medium"
+              className="border border-slate-200 rounded-lg px-4 py-2.5 bg-white text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-medium"
             >
               <option value="PENDING">Pending Review</option>
               <option value="APPROVED">Approved</option>
@@ -285,20 +285,20 @@ export default function ProductApprovalsPage() {
       />
 
       {loading ? (
-        <div className="text-slate-500 font-medium p-8 flex items-center justify-center bg-white rounded-2xl border border-slate-200">
+        <div className="text-slate-500 font-medium p-8 flex items-center justify-center bg-white rounded-lg border border-slate-200">
           Loading approvals...
         </div>
       ) : error ? (
-        <div className="text-rose-600 bg-rose-50 p-4 rounded-xl border border-rose-200">{error}</div>
+        <div className="text-rose-600 bg-rose-50 p-4 rounded-lg border border-rose-200">{error}</div>
       ) : approvals.length === 0 ? (
-        <div className="text-slate-500 font-medium text-center py-16 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center gap-2 shadow-sm">
-          <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200 mb-2">
+        <div className="text-slate-500 font-medium text-center py-16 bg-white rounded-lg border border-slate-200 flex flex-col items-center justify-center gap-2 shadow-sm">
+          <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-200 mb-2">
             <span className="text-xl">📦</span>
           </div>
           No products found in this category.
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
           {!selectedVendorId ? (
             <DataTable columns={vendorColumns} data={groupedVendors} />
           ) : (
@@ -310,14 +310,14 @@ export default function ProductApprovalsPage() {
       {/* Action Modal */}
       {modalApproval && actionType && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
             <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
               <h2 className="text-xl font-bold text-slate-900">
                 {actionType === 'REJECT' ? 'Reject Product' : 'Request Changes'}
               </h2>
             </div>
             <form onSubmit={submitAction} className="p-6">
-              <div className="mb-5 bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center gap-3">
+              <div className="mb-5 bg-slate-50 p-4 rounded-lg border border-slate-100 flex items-center gap-3">
                 {modalApproval.product.images?.[0]?.url && (
                   <img src={modalApproval.product.images[0].url} alt="" className="w-12 h-12 rounded-lg object-cover border border-slate-200" />
                 )}
@@ -335,21 +335,21 @@ export default function ProductApprovalsPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   required
                   rows={4}
-                  className="w-full border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-slate-50 focus:bg-white transition-colors"
+                  className="w-full border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-slate-50 focus:bg-white transition-colors"
                   placeholder="Enter notes to send to the vendor..."
                 />
               </div>
               <div className="flex justify-end gap-3 mt-6">
                 <button 
                   type="button" 
-                  className="px-5 py-2.5 font-semibold border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors" 
+                  className="px-5 py-2.5 font-semibold border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors" 
                   onClick={() => { setModalApproval(null); setNotes(''); }}
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="px-5 py-2.5 font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 shadow-sm shadow-indigo-200" 
+                  className="px-5 py-2.5 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 shadow-sm shadow-indigo-200" 
                   disabled={actionLoading}
                 >
                   {actionLoading ? 'Processing...' : 'Submit'}
@@ -363,7 +363,7 @@ export default function ProductApprovalsPage() {
       {/* View Modal */}
       {viewProduct && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-200">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden border border-slate-200">
             <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
               <h2 className="text-xl font-bold text-slate-900">Product Details</h2>
               <button onClick={() => setViewProduct(null)} className="text-slate-400 hover:text-slate-600 transition-colors">
@@ -373,9 +373,9 @@ export default function ProductApprovalsPage() {
             <div className="p-6">
               <div className="flex gap-4">
                 {viewProduct.product.images?.[0]?.url ? (
-                  <img src={viewProduct.product.images[0].url} alt="" className="w-24 h-24 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                  <img src={viewProduct.product.images[0].url} alt="" className="w-24 h-24 object-cover rounded-lg border border-slate-200 shadow-sm" />
                 ) : (
-                  <div className="w-24 h-24 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-center text-sm text-slate-400 font-medium">No Image</div>
+                  <div className="w-24 h-24 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center text-sm text-slate-400 font-medium">No Image</div>
                 )}
                 <div className="flex-1">
                   <h3 className="font-bold text-lg text-slate-900 leading-tight">{viewProduct.product.name}</h3>
@@ -403,13 +403,13 @@ export default function ProductApprovalsPage() {
                   {viewProduct.rejectionReason && (
                     <div className="col-span-2">
                       <span className="block text-slate-400 font-bold tracking-wider uppercase text-xs mb-1">Rejection Reason</span>
-                      <p className="text-slate-700 bg-rose-50 p-3 rounded-xl border border-rose-100">{viewProduct.rejectionReason}</p>
+                      <p className="text-slate-700 bg-rose-50 p-3 rounded-lg border border-rose-100">{viewProduct.rejectionReason}</p>
                     </div>
                   )}
                   {viewProduct.adminNotes && (
                     <div className="col-span-2">
                       <span className="block text-slate-400 font-bold tracking-wider uppercase text-xs mb-1">Admin Notes</span>
-                      <p className="text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">{viewProduct.adminNotes}</p>
+                      <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">{viewProduct.adminNotes}</p>
                     </div>
                   )}
                 </div>
@@ -418,7 +418,7 @@ export default function ProductApprovalsPage() {
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end">
               <button 
                 onClick={() => setViewProduct(null)}
-                className="px-5 py-2.5 font-bold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+                className="px-5 py-2.5 font-bold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
               >
                 Close
               </button>
@@ -436,13 +436,13 @@ export default function ProductApprovalsPage() {
           <p className="text-slate-600 mb-6 font-medium">Are you sure you want to approve this product? It will become visible to customers immediately.</p>
           <div className="flex justify-end gap-3">
             <button 
-              className="px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-xl transition-colors"
+              className="px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors"
               onClick={() => setConfirmApproveId(null)}
             >
               Cancel
             </button>
             <button 
-              className="px-5 py-2.5 font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
+              className="px-5 py-2.5 font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
               onClick={handleApprove}
               disabled={actionLoading}
             >
@@ -454,3 +454,4 @@ export default function ProductApprovalsPage() {
     </div>
   );
 }
+

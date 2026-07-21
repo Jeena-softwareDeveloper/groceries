@@ -44,7 +44,7 @@ export default function VendorsPage() {
       header: 'Shop',
       cell: (v) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 shrink-0">
+          <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 shrink-0">
             <Store size={14} strokeWidth={2.5} />
           </div>
           <span className="font-bold text-slate-900">{v.shopName}</span>
@@ -138,7 +138,7 @@ export default function VendorsPage() {
           <button
             key={i}
             onClick={() => setFilter(i === 0 ? '' : i === 1 ? 'PENDING' : 'APPROVED')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
               chip.active
                 ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                 : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900'
@@ -180,3 +180,4 @@ export default function VendorsPage() {
     </div>
   );
 }
+

@@ -99,7 +99,7 @@ export default function CategoriesPage() {
       header: 'Name',
       cell: (c) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
             <Tag size={14} className="text-slate-400" strokeWidth={2.5} />
           </div>
           <span className="font-bold text-slate-900">{c.name}</span>
@@ -171,7 +171,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Category Name</label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
               placeholder="e.g. Fruits & Vegetables"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -182,7 +182,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Slug</label>
             <input
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
               placeholder="e.g. fruits-vegetables"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
@@ -193,7 +193,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Parent Category</label>
             <select
-              className="px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
+              className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 outline-none bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all w-full"
               value={parentId}
               onChange={(e) => setParentId(e.target.value)}
             >
@@ -226,7 +226,7 @@ export default function CategoriesPage() {
             </button>
             <button
               type="submit"
-              className="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+              className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-700 transition-colors shadow-sm"
             >
               {editCategory ? 'Save Changes' : 'Create Category'}
             </button>
@@ -247,7 +247,7 @@ export default function CategoriesPage() {
               <h4 className="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider">Subcategories</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {c.children.map(child => (
-                  <div key={child.id} className="bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                  <div key={child.id} className="bg-white border border-slate-200 p-4 rounded-lg flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
                      <div className="flex items-center gap-3">
                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
                          <Tag size={12} className="text-slate-400" />
@@ -302,3 +302,4 @@ export default function CategoriesPage() {
     </div>
   );
 }
+

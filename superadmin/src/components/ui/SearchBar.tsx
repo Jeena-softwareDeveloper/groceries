@@ -12,7 +12,7 @@ interface SearchBarProps {
 export function SearchBar({ value, onChange, placeholder = 'Search...', totalCount, totalLabel }: SearchBarProps) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm w-72 focus-within:ring-2 focus-within:ring-slate-200 transition-all">
+      <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2 shadow-sm w-72 focus-within:ring-2 focus-within:ring-slate-200 transition-all">
         <Search size={14} className="text-slate-400 shrink-0" strokeWidth={2.5} />
         <input
           className="flex-1 text-sm outline-none bg-transparent placeholder:text-slate-400 text-slate-700 font-medium"
@@ -29,3 +29,4 @@ export function SearchBar({ value, onChange, placeholder = 'Search...', totalCou
     </div>
   );
 }
+
